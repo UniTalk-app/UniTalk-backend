@@ -10,6 +10,12 @@ Database server: PostgreSQL
 - included dependencies: <br>
   Spring Web, JDBC API, PostgreSQL Driver
   
+# Setting up project
+- Git clone repository
+- Open the projects directory and type `./mvnw spring-boot:run ` in order to install dependencies and run application
+
+To use tests you will need to download [Maven](https://maven.apache.org/download.cgi) and run `mvn test`
+
 # Developer info
 To start further development of the project one must:
 
