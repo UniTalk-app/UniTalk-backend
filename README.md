@@ -25,3 +25,7 @@ To start further development of the project one must:
 - download and install IDE (suggested IntelliJ IDEA)
 - download and install PostgreSQL
 - DB connection info: src/main/resources/<b>application.properties</b>
+
+# Comments
+- DB is in 'create-drop' mode, so that means every time the server
+starts, tables are dropped and recreated - empty
