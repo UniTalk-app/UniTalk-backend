@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Table(name = "group")
 @NoArgsConstructor
 @Getter @Setter
-public class Thread {
+public class Group {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer group_id;
 
