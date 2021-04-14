@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Thread {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer thread_id;
+    private Long thread_id;
 
     @Basic(optional = false)
     @Column(length = 128)
@@ -33,15 +33,13 @@ public class Thread {
 
     private Timestamp last_reply_timestamp;
 
-    public Thread(Integer thread_id,
-                  String title,
+    public Thread(String title,
                   Integer creator_id,
                   Integer category_id,
                   Integer group_id,
                   Integer last_reply_author_id,
                   Timestamp creation_timestamp,
                   Timestamp last_reply_timestamp) {
-        this.thread_id = thread_id;
         this.title = title;
         this.creator_id = creator_id;
         this.category_id = category_id;
