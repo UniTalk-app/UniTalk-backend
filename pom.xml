@@ -45,12 +45,10 @@
             <artifactId>lombok</artifactId>
 			<version>1.18.20</version>
         </dependency>
-<!--	not sure about this one 	-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
-<!--	======================= 	-->
     </dependencies>
 
 	<build>

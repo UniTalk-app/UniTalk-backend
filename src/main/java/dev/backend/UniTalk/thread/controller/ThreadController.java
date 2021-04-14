@@ -1,9 +1,10 @@
-package dev.backend.UniTalk.controller;
+package dev.backend.UniTalk.thread.controller;
 
 import java.util.List;
-import dev.backend.UniTalk.exception.ThreadException;
-import dev.backend.UniTalk.model.Thread;
-import dev.backend.UniTalk.repository.ThreadRepository;
+import java.util.stream.Collectors;
+import dev.backend.UniTalk.thread.exception.ThreadException;
+import dev.backend.UniTalk.thread.model.Thread;
+import dev.backend.UniTalk.thread.repository.ThreadRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+
 
 @RestController
 @RequestMapping("/thread")
@@ -24,14 +30,27 @@ public class ThreadController {
     }
 
     @GetMapping("/all")
-    public List<Thread> all() {
-        return this.repository.findAll();
+    public CollectionModel<EntityModel<Thread>> all() {
+
+        List<EntityModel<Thread>> threads = repository.findAll().stream()
+                .map(thread -> EntityModel.of(thread,
+                        linkTo(methodOn(ThreadController.class).one(thread.getThread_id())).withSelfRel(),
+                        linkTo(methodOn(ThreadController.class).all()).withRel("threads")))
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(threads, linkTo(methodOn(ThreadController.class).all()).withSelfRel());
     }
 
     @GetMapping("/{id}")
-    public Thread one(@PathVariable Long id) {
-        return this.repository.findById(id).orElseThrow(() -> new ThreadException(id));
-    }
+    public EntityModel<Thread> one(@PathVariable Long id) {
+
+    Thread thread = repository.findById(id)
+            .orElseThrow(() -> new ThreadException(id));
+
+    return EntityModel.of(thread,
+            linkTo(methodOn(ThreadController.class).one(id)).withSelfRel(),
+            linkTo(methodOn(ThreadController.class).all()).withRel("thread"));
+}
 
     @PostMapping("/")
     public Thread newThread(@RequestBody Thread newThread) {

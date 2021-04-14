@@ -2,10 +2,10 @@
 // this is only used to insert data into the DB while starting the program
 //========================================================================
 
-package dev.backend.UniTalk.component;
+package dev.backend.UniTalk.thread.component;
 
-import dev.backend.UniTalk.model.Thread;
-import dev.backend.UniTalk.repository.ThreadRepository;
+import dev.backend.UniTalk.thread.model.Thread;
+import dev.backend.UniTalk.thread.repository.ThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

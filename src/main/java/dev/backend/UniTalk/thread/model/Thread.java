@@ -1,4 +1,4 @@
-package dev.backend.UniTalk.model;
+package dev.backend.UniTalk.thread.model;
 
 import lombok.*;
 import javax.persistence.*;
