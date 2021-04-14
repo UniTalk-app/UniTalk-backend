@@ -3,12 +3,14 @@ package dev.backend.UniTalk.model;
 import lombok.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "thread")
 @NoArgsConstructor
 @Getter @Setter
 public class Thread {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer thread_id;
 
@@ -24,7 +26,6 @@ public class Thread {
     @Basic(optional = false)
     private Integer group_id;
 
-    @Basic(optional = false)
     private Integer last_reply_author_id;
 
     @Basic(optional = false)
@@ -32,6 +33,40 @@ public class Thread {
 
     private Timestamp last_reply_timestamp;
 
+    public Thread(Integer thread_id,
+                  String title,
+                  Integer creator_id,
+                  Integer category_id,
+                  Integer group_id,
+                  Integer last_reply_author_id,
+                  Timestamp creation_timestamp,
+                  Timestamp last_reply_timestamp) {
+        this.thread_id = thread_id;
+        this.title = title;
+        this.creator_id = creator_id;
+        this.category_id = category_id;
+        this.group_id = group_id;
+        this.last_reply_author_id = last_reply_author_id;
+        this.creation_timestamp = creation_timestamp;
+        this.last_reply_timestamp = last_reply_timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Thread)) return false;
+        Thread thread = (Thread) o;
+        return getThread_id().equals(thread.getThread_id()) && getTitle().equals(thread.getTitle()) && getCreator_id().equals(thread.getCreator_id())
+                && Objects.equals(getCategory_id(), thread.getCategory_id()) && getGroup_id().equals(thread.getGroup_id())
+                && Objects.equals(getLast_reply_author_id(), thread.getLast_reply_author_id()) && getCreation_timestamp().equals(thread.getCreation_timestamp())
+                && Objects.equals(getLast_reply_timestamp(), thread.getLast_reply_timestamp());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getThread_id(), getTitle(), getCreator_id(), getCategory_id(),
+                getGroup_id(), getLast_reply_author_id(), getCreation_timestamp(), getLast_reply_timestamp());
+    }
 
     @Override
     public String toString() {
