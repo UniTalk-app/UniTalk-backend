@@ -1,5 +1,7 @@
 # UniTalk-backend
 
+[![CI](https://github.com/UniTalk-app/UniTalk-backend/actions/workflows/main.yml/badge.svg)](https://github.com/UniTalk-app/UniTalk-backend/actions/workflows/main.yml)
+
 Created in Java/Spring with start.spring.io <br>
 Database server: PostgreSQL
 
