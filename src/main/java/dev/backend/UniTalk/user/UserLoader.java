@@ -1,10 +1,11 @@
 package dev.backend.UniTalk.user;
 
-import dev.backend.UniTalk.user.User;
-import dev.backend.UniTalk.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
 
 @Component
 public class UserLoader implements CommandLineRunner {
@@ -16,8 +17,12 @@ public class UserLoader implements CommandLineRunner {
         this.userRepository = userRepository;
     }
 
+    @Autowired
+    PasswordEncoder encoder;
+
     @Override
     public void run(String... args) throws Exception {
-        this.userRepository.save(new User("username", "email", "password"));
+        User user = new User("username", "email", encoder.encode("qwerty"));
+        this.userRepository.save(user);
     }
 }
