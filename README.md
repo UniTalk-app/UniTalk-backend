@@ -12,7 +12,7 @@ Database server: PostgreSQL
 - included dependencies: <br>
   Spring Web, JDBC API, PostgreSQL Driver
   
-  Check out [our wiki](https://github.com/UniTalk-app/UniTalk-backend/wiki) for documentation!
+Check out [our wiki](https://github.com/UniTalk-app/UniTalk-backend/wiki) for documentation!
   
 # Setting up the project
 - Git clone repository
