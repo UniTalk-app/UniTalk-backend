@@ -1,4 +1,4 @@
-package dev.backend.UniTalk.thread.exception;
+package dev.backend.UniTalk.thread;
 
 public class ThreadException extends RuntimeException {
 

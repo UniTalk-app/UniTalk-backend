@@ -1,12 +1,15 @@
-package dev.backend.UniTalk.thread.model;
+package dev.backend.UniTalk.thread;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.backend.UniTalk.group.Group;
 import lombok.*;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "thread")
+@Table(name = "threads")
 @NoArgsConstructor
 @Getter @Setter
 public class Thread {
@@ -23,8 +26,10 @@ public class Thread {
 
     private Integer category_id;
 
-    @Basic(optional = false)
-    private Integer group_id;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     private Integer last_reply_author_id;
 
@@ -36,14 +41,14 @@ public class Thread {
     public Thread(String title,
                   Integer creator_id,
                   Integer category_id,
-                  Integer group_id,
+                  Group group,
                   Integer last_reply_author_id,
                   Timestamp creation_timestamp,
                   Timestamp last_reply_timestamp) {
         this.title = title;
         this.creator_id = creator_id;
         this.category_id = category_id;
-        this.group_id = group_id;
+        this.group = group;
         this.last_reply_author_id = last_reply_author_id;
         this.creation_timestamp = creation_timestamp;
         this.last_reply_timestamp = last_reply_timestamp;
@@ -54,23 +59,17 @@ public class Thread {
         if (this == o) return true;
         if (!(o instanceof Thread)) return false;
         Thread thread = (Thread) o;
-        return getThread_id().equals(thread.getThread_id()) && getTitle().equals(thread.getTitle()) && getCreator_id().equals(thread.getCreator_id())
-                && Objects.equals(getCategory_id(), thread.getCategory_id()) && getGroup_id().equals(thread.getGroup_id())
-                && Objects.equals(getLast_reply_author_id(), thread.getLast_reply_author_id()) && getCreation_timestamp().equals(thread.getCreation_timestamp())
+        return getThread_id().equals(thread.getThread_id()) && getTitle().equals(thread.getTitle())
+                && getCreator_id().equals(thread.getCreator_id()) && Objects.equals(getCategory_id(),
+                thread.getCategory_id()) && getGroup().equals(thread.getGroup())
+                && Objects.equals(getLast_reply_author_id(), thread.getLast_reply_author_id())
+                && getCreation_timestamp().equals(thread.getCreation_timestamp())
                 && Objects.equals(getLast_reply_timestamp(), thread.getLast_reply_timestamp());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getThread_id(), getTitle(), getCreator_id(), getCategory_id(),
-                getGroup_id(), getLast_reply_author_id(), getCreation_timestamp(), getLast_reply_timestamp());
-    }
-
-    @Override
-    public String toString() {
-        return "thread{" +
-                "thread_id=" + thread_id +
-                ", title='" + title + '\'' +
-                '}';
+        return Objects.hash(getThread_id(), getTitle(), getCreator_id(), getCategory_id(), getGroup(),
+                getLast_reply_author_id(), getCreation_timestamp(), getLast_reply_timestamp());
     }
 }
