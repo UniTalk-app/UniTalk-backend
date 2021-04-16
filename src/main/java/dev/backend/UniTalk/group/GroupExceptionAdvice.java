@@ -1,6 +1,5 @@
 package dev.backend.UniTalk.group;
 
-import dev.backend.UniTalk.group.GroupException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

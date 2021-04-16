@@ -52,7 +52,11 @@ public class GroupController {
 
     @PostMapping("/")
     public Group newGroup(@RequestBody Group newGroup) {
-        return repository.save(newGroup);
+
+        Group group = new Group(newGroup.getGroup_name(), newGroup.getCreator_id(),
+                newGroup.getCreation_timestamp());
+
+        return repository.save(group);
     }
 
 

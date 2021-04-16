@@ -22,16 +22,16 @@ public class Thread {
     private String title;
 
     @Basic(optional = false)
-    private Integer creator_id;
+    private Long creator_id;
 
-    private Integer category_id;
+    private Long category_id;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    private Integer last_reply_author_id;
+    private Long last_reply_author_id;
 
     @Basic(optional = false)
     private Timestamp creation_timestamp;
@@ -39,10 +39,10 @@ public class Thread {
     private Timestamp last_reply_timestamp;
 
     public Thread(String title,
-                  Integer creator_id,
-                  Integer category_id,
+                  Long creator_id,
+                  Long category_id,
                   Group group,
-                  Integer last_reply_author_id,
+                  Long last_reply_author_id,
                   Timestamp creation_timestamp,
                   Timestamp last_reply_timestamp) {
         this.title = title;
@@ -59,17 +59,11 @@ public class Thread {
         if (this == o) return true;
         if (!(o instanceof Thread)) return false;
         Thread thread = (Thread) o;
-        return getThread_id().equals(thread.getThread_id()) && getTitle().equals(thread.getTitle())
-                && getCreator_id().equals(thread.getCreator_id()) && Objects.equals(getCategory_id(),
-                thread.getCategory_id()) && getGroup().equals(thread.getGroup())
-                && Objects.equals(getLast_reply_author_id(), thread.getLast_reply_author_id())
-                && getCreation_timestamp().equals(thread.getCreation_timestamp())
-                && Objects.equals(getLast_reply_timestamp(), thread.getLast_reply_timestamp());
+        return thread_id.equals(thread.thread_id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getThread_id(), getTitle(), getCreator_id(), getCategory_id(), getGroup(),
-                getLast_reply_author_id(), getCreation_timestamp(), getLast_reply_timestamp());
+        return Objects.hash(thread_id);
     }
 }

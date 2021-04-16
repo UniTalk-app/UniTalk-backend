@@ -4,7 +4,6 @@
 
 package dev.backend.UniTalk.group;
 
-import dev.backend.UniTalk.group.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

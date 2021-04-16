@@ -63,7 +63,15 @@ public class ThreadController {
 
     @PostMapping("/{idGroup}/thread")
     public Thread newThread(@RequestBody Thread newThread, @PathVariable Long idGroup) {
-        return threadRepository.save(newThread);
+
+        Thread thread = new Thread(newThread.getTitle(), newThread.getCreator_id(),
+                newThread.getCategory_id(), null, newThread.getLast_reply_author_id(),
+                newThread.getCreation_timestamp(), newThread.getLast_reply_timestamp());
+
+        return groupRepository.findById(idGroup).map(group -> {
+            thread.setGroup(group);
+            return threadRepository.save(thread);
+        }).orElseThrow(() -> new GroupException(idGroup));
     }
 
 

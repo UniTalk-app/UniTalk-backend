@@ -25,9 +25,10 @@ public class GroupLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        Group g = new Group("GroupTitle", 1, new Timestamp(System.currentTimeMillis()));
+        Group g = new Group("GroupTitle", 1L, new Timestamp(System.currentTimeMillis()));
         this.gRepository.save(g);
-        this.tRepository.save(new Thread("ThreadTitle", 1, 1, g,
-                1, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())));
+        this.tRepository.save(new Thread("ThreadTitle", 1L, 1L, g,
+                1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())));
+
     }
 }

@@ -22,7 +22,7 @@ public class Group {
     private String group_name;
 
     @Basic(optional = false)
-    private Integer creator_id;
+    private Long creator_id;
 
     @Basic(optional = false)
     private Timestamp creation_timestamp;
@@ -30,7 +30,7 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Thread> threads = new HashSet<>();
 
-    public Group(String group_name, Integer creator_id, Timestamp creation_timestamp) {
+    public Group(String group_name, Long creator_id, Timestamp creation_timestamp) {
         this.group_name = group_name;
         this.creator_id = creator_id;
         this.creation_timestamp = creation_timestamp;
@@ -41,14 +41,12 @@ public class Group {
         if (this == o) return true;
         if (!(o instanceof Group)) return false;
         Group group = (Group) o;
-        return getGroup_id().equals(group.getGroup_id()) && getGroup_name().equals(group.getGroup_name())
-                && getCreator_id().equals(group.getCreator_id())
-                && getCreation_timestamp().equals(group.getCreation_timestamp());
+        return group_id.equals(group.group_id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getGroup_id(), getGroup_name(), getCreator_id(), getCreation_timestamp());
+        return Objects.hash(group_id);
     }
 
     @Override
