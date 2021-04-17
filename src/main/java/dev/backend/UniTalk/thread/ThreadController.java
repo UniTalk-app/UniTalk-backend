@@ -82,24 +82,17 @@ public class ThreadController {
 
         Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
 
-        Thread threadRepo = threadRepository.findById(idThread)
+        Thread thread = threadRepository.findById(idThread)
                 .orElseThrow(() -> new ThreadException(idThread));
 
-        return threadRepository.findById(idThread)
-                .map(thread -> {
-                    thread.setTitle(newThread.getTitle());
-                    thread.setCreator_id(newThread.getCreator_id());
-                    thread.setCategory_id(newThread.getCategory_id());
-                    thread.setGroup(newThread.getGroup());
-                    thread.setLast_reply_author_id(newThread.getLast_reply_author_id());
-                    thread.setLast_reply_timestamp(newThread.getLast_reply_timestamp());
-                    thread.setCreation_timestamp(newThread.getCreation_timestamp());
-                    return threadRepository.save(thread);
-                })
-                .orElseGet(() -> {
-                    newThread.setThread_id(idThread);
-                    return threadRepository.save(newThread);
-                });
+        thread.setTitle(newThread.getTitle());
+        thread.setCreator_id(newThread.getCreator_id());
+        thread.setCategory_id(newThread.getCategory_id());
+        thread.setGroup(group);
+        thread.setLast_reply_author_id(newThread.getLast_reply_author_id());
+        thread.setLast_reply_timestamp(newThread.getLast_reply_timestamp());
+        thread.setCreation_timestamp(newThread.getCreation_timestamp());
+        return threadRepository.save(thread);
     }
 
     @DeleteMapping("/{idGroup}/thread/{idThread}")
