@@ -10,8 +10,6 @@ import javax.validation.Valid;
 import dev.backend.UniTalk.role.ERole;
 import dev.backend.UniTalk.role.Role;
 import dev.backend.UniTalk.user.User;
-import dev.backend.UniTalk.payload.request.LoginRequest;
-import dev.backend.UniTalk.payload.request.RegisterRequest;
 import dev.backend.UniTalk.payload.response.JwtResponse;
 import dev.backend.UniTalk.payload.response.MessageResponse;
 import dev.backend.UniTalk.role.RoleRepository;
@@ -23,8 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,7 +52,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody User loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -62,10 +62,11 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
@@ -73,7 +74,19 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    @Validated
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User registerRequest) {
+        if (
+                registerRequest.getEmail() == null ||
+                registerRequest.getUsername() == null ||
+                registerRequest.getPassword() == null ||
+                registerRequest.getFirstName() == null ||
+                registerRequest.getLastName() == null
+        ) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: User data is not complete!"));
+        }
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -87,7 +100,8 @@ public class AuthController {
         }
 
         // Create new user's account
-        User user = new User(registerRequest.getUsername(),
+        User user = new User(
+                registerRequest.getUsername(),
                 registerRequest.getEmail(),
                 encoder.encode(registerRequest.getPassword()));
 

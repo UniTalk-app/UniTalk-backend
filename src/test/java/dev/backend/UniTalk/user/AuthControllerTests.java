@@ -1,7 +1,5 @@
 package dev.backend.UniTalk.user;
 
-import dev.backend.UniTalk.payload.request.LoginRequest;
-import dev.backend.UniTalk.payload.request.RegisterRequest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,35 +21,147 @@ public class AuthControllerTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
     public void RegisterWithValidRequest() throws Exception {
         final String address = "http://localhost:" + port + "/api/auth/register";
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUsername("user");
-        registerRequest.setEmail("test@a.com");
-        registerRequest.setPassword("ha");
+        User user = new User();
+        user.setUsername("user");
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setEmail("test@a.com");
+        user.setPassword("ha");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<RegisterRequest> request = new HttpEntity<>(registerRequest, headers);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        assertEquals(1, userRepository.count());
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals("{\"message\":\"User registered successfully!\"}", response.getBody());
+        assertEquals(2, userRepository.count());
     }
 
     @Test
-    public void RegisterWithInvalidRequest_UsernameTaken() throws Exception {
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_NoUsername() throws Exception {
         final String address = "http://localhost:" + port + "/api/auth/register";
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUsername("username");
-        registerRequest.setEmail("test@a.com");
-        registerRequest.setPassword("ha");
+        User user = new User();
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setEmail("test@a.com");
+        user.setPassword("ha");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<RegisterRequest> request = new HttpEntity<>(registerRequest, headers);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_NoEmail() throws Exception {
+        final String address = "http://localhost:" + port + "/api/auth/register";
+        User user = new User();
+        user.setUsername("user");
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setPassword("ha");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_NoPassword() throws Exception {
+        final String address = "http://localhost:" + port + "/api/auth/register";
+        User user = new User();
+        user.setUsername("user");
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setEmail("test@a.com");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_NoFirstName() throws Exception {
+        final String address = "http://localhost:" + port + "/api/auth/register";
+        User user = new User();
+        user.setUsername("user");
+        user.setLastName("last");
+        user.setEmail("test@a.com");
+        user.setPassword("ha");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_NoLastName() throws Exception {
+        final String address = "http://localhost:" + port + "/api/auth/register";
+        User user = new User();
+        user.setUsername("user");
+        user.setFirstName("first");
+        user.setEmail("test@a.com");
+        user.setPassword("ha");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
+    public void RegisterWithInvalidRequest_UsernameTaken() throws Exception {
+        final String address = "http://localhost:" + port + "/api/auth/register";
+        User user = new User();
+        user.setUsername("rafal");
+        user.setFirstName("f");
+        user.setLastName("l");
+        user.setEmail("test@a.com");
+        user.setPassword("ha");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
@@ -59,16 +170,19 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
     public void RegisterWithInvalidRequest_EmailTaken() throws Exception {
         final String address = "http://localhost:" + port + "/api/auth/register";
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUsername("user2");
-        registerRequest.setEmail("email");
-        registerRequest.setPassword("ha");
+        User user = new User();
+        user.setUsername("user2");
+        user.setFirstName("f");
+        user.setLastName("l");
+        user.setEmail("email");
+        user.setPassword("ha");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<RegisterRequest> request = new HttpEntity<>(registerRequest, headers);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
@@ -77,19 +191,20 @@ public class AuthControllerTests {
     }
 
     @Test
+    @Sql(scripts = "/tests/UserPrepare.sql")
     public void LoginWithValidRequest() throws Exception {
         final String address = "http://localhost:" + port + "/api/auth/login";
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("username");
-        loginRequest.setPassword("qwerty");
+        User user = new User();
+        user.setUsername("rafal");
+        user.setPassword("qwerty");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertTrue(response.getBody().contains("\"type\":\"Bearer\",\"id\":1,\"username\":\"username\",\"email\":\"email\",\"roles\":"));
+        assertTrue(response.getBody().contains("\"type\":\"Bearer\",\"id\":1,\"username\":\"rafal\",\"email\":\"email\",\"roles\":"));
     }
 }
