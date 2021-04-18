@@ -41,12 +41,12 @@ public class CategoryControllerTests
     @Sql(scripts = "/tests/CategoryPrepare.sql")
     public void CategoryOne() throws Exception
     {
-        final String address = "http://localhost:" + port + "/api/group/555/category/2";
+        final String address = "http://localhost:" + port + "/api/group/555/category/44";
 
         ResponseEntity<String> response = restTemplate.getForEntity(address,String.class );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0,7 ), "{\"id\":2");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0,8 ), "{\"id\":44");
     }
 
     @Test
@@ -66,16 +66,16 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 21), "{\"id\":3,\"name\":\"Cat3\"");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 5), "{\"id\"");
     }
 
     @Test
     @Sql(scripts = "/tests/CategoryPrepare.sql")
     public void CategoryReplace() throws Exception
     {
-        final String address = "http://localhost:" + port + "/api/group/555/category/1";
+        final String address = "http://localhost:" + port + "/api/group/555/category/55";
 
-        Category category=new Category("CatNew", null,new Timestamp(System.currentTimeMillis()));
+        Category category=new Category("CatUpdated", null,new Timestamp(System.currentTimeMillis()));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -85,14 +85,14 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.PUT, request, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 23), "{\"id\":1,\"name\":\"CatNew\"");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 28), "{\"id\":55,\"name\":\"CatUpdated\"");
     }
 
     @Test
     @Sql(scripts = "/tests/CategoryPrepare.sql")
     public void CategoryDelete() throws Exception
     {
-        final String address = "http://localhost:" + port + "/api/group/555/category/1";
+        final String address = "http://localhost:" + port + "/api/group/555/category/55";
 
         HttpHeaders headers = new HttpHeaders();
 
