@@ -1,5 +1,6 @@
 package dev.backend.UniTalk.category;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,17 +70,13 @@ public class CategoryController
     public ResponseEntity<?> newCategory( @PathVariable Long idGroup,@RequestBody Category newCategory)
     {
         Group group=groupRepository.findById(idGroup).orElseThrow(()->new GroupException(idGroup));
-        newCategory.setGroup(group);
 
-        Category category=categoryRepository.save(newCategory);
-
-        EntityModel<Category> entityModel = EntityModel.of(category,
-                linkTo(methodOn(CategoryController.class).one(idGroup, category.getId())).withSelfRel(),
-                linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
+        Category category = new Category(newCategory.getName(), group, newCategory.getCreation_timestamp());
+        categoryRepository.save(category);
 
         return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+                .created(URI.create("/" + idGroup + "/category/" + category.getId()))
+                .body(category);
     }
 
     @PutMapping("/{idGroup}/category/{idCategory}")
@@ -93,7 +90,6 @@ public class CategoryController
                 .orElseThrow(() -> new CategoryException(idCategory));
 
         category.setName(newCategory.getName());
-        category.setGroup(group);
         category.setCreation_timestamp(newCategory.getCreation_timestamp());
 
         categoryRepository.save(category);

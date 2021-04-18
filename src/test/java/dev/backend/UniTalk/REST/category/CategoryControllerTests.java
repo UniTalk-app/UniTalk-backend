@@ -66,7 +66,7 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 21), "{\"id\":3,\"name\":\"Cat3\"");
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("{\"id\":3,\"name\":\"Cat3\",\"creation_timestamp\":"));
     }
 
     @Test
