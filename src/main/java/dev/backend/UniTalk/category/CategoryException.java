@@ -1,4 +1,4 @@
-package dev.backend.UniTalk.exception;
+package dev.backend.UniTalk.category;
 
 public class CategoryException extends RuntimeException
  {

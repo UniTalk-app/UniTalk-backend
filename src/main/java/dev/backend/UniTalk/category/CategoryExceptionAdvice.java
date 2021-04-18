@@ -1,4 +1,4 @@
-package dev.backend.UniTalk.exception;
+package dev.backend.UniTalk.category;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

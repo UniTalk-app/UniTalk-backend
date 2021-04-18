@@ -1,6 +1,7 @@
 package dev.backend.UniTalk.group;
 
 import dev.backend.UniTalk.thread.Thread;
+import dev.backend.UniTalk.category.Category;
 import lombok.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,6 +30,8 @@ public class Group {
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Thread> threads = new HashSet<>();
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Category> categories = new HashSet<>();
 
     public Group(String group_name, Long creator_id, Timestamp creation_timestamp) {
         this.group_name = group_name;
