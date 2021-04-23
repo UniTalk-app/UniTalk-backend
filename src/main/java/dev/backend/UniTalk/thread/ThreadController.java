@@ -75,11 +75,14 @@ public class ThreadController {
                 null, null, newThread.getLast_reply_author_id(),
                 newThread.getCreation_timestamp(), newThread.getLast_reply_timestamp());
 
-        Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
-        if(category.isPresent())
+        if(newThread.getCat_id()!=null)
         {
-            thread.setCategory(category.get());
-            thread.setCat_id(newThread.getCat_id());
+            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
+            if(category.isPresent())
+            {
+                thread.setCategory(category.get());
+                thread.setCat_id(newThread.getCat_id());
+            }
         }
 
         return groupRepository.findById(idGroup).map(group -> {
@@ -106,11 +109,14 @@ public class ThreadController {
         thread.setLast_reply_timestamp(newThread.getLast_reply_timestamp());
         thread.setCreation_timestamp(newThread.getCreation_timestamp());
 
-        Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
-        if(category.isPresent())
+        if(newThread.getCat_id()!=null)
         {
-            thread.setCategory(category.get());
-            thread.setCat_id(newThread.getCat_id());
+            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
+            if(category.isPresent())
+            {
+                thread.setCategory(category.get());
+                thread.setCat_id(newThread.getCat_id());
+            }
         }
 
         return threadRepository.save(thread);

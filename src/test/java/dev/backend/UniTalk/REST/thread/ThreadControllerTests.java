@@ -53,7 +53,7 @@ public class ThreadControllerTests {
 
         final String address = "http://localhost:" + port + "/api/group/555/thread";
 
-        Thread thread = new Thread("ThreadTitle", 1L, 1L, null,
+        Thread thread = new Thread("ThreadTitle", 1L, 44L, null,
                 1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
 
         HttpHeaders headers = new HttpHeaders();
@@ -74,7 +74,7 @@ public class ThreadControllerTests {
 
         final String address = "http://localhost:" + port + "/api/group/555/thread/444";
 
-        Thread thread = new Thread("ThreadTitle", 1L, 1L, null,
+        Thread thread = new Thread("ThreadTitle", 1L, 44L, null,
                 1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
 
         HttpHeaders headers = new HttpHeaders();

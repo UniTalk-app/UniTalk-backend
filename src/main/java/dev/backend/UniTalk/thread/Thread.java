@@ -36,7 +36,6 @@ public class Thread {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
-    @JsonIgnore
     @Column(nullable = true)
     private Long cat_id;
 

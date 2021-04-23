@@ -46,7 +46,7 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.getForEntity(address,String.class );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0,8 ), "{\"id\":44");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0,17 ), "{\"category_id\":44");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 5), "{\"id\"");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 14), "{\"category_id\"");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class CategoryControllerTests
         ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.PUT, request, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 28), "{\"id\":55,\"name\":\"CatUpdated\"");
+        assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 37), "{\"category_id\":55,\"name\":\"CatUpdated\"");
     }
 
     @Test
