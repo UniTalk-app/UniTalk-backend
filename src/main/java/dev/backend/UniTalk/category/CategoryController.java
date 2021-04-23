@@ -44,7 +44,7 @@ public class CategoryController
 
         List<EntityModel<Category>> categories = categoryRepository.findByGroup(group).stream()
                 .map(category -> EntityModel.of(category,
-                        linkTo(methodOn(CategoryController.class).one(idGroup, category.getId())).withSelfRel(),
+                        linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
                         linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories")))
                 .collect(Collectors.toList());
 
@@ -62,7 +62,7 @@ public class CategoryController
         if(category.getGroup()!= group)throw new CategoryException(idCategory);
 
         return EntityModel.of(category,
-                linkTo(methodOn(CategoryController.class).one(idGroup, category.getId())).withSelfRel(),
+                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
                 linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
     }
 
@@ -75,7 +75,7 @@ public class CategoryController
         categoryRepository.save(category);
 
         return ResponseEntity
-                .created(URI.create("/" + idGroup + "/category/" + category.getId()))
+                .created(URI.create("/" + idGroup + "/category/" + category.getCategory_id()))
                 .body(category);
     }
 
@@ -95,7 +95,7 @@ public class CategoryController
         categoryRepository.save(category);
 
         EntityModel<Category> entityModel = EntityModel.of(category,
-                linkTo(methodOn(CategoryController.class).one(idGroup, category.getId())).withSelfRel(),
+                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
                 linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
 
         return ResponseEntity
