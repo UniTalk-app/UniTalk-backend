@@ -30,12 +30,20 @@ public class GroupLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
+
         Group g = new Group("GroupTitle", 1L, new Timestamp(System.currentTimeMillis()));
         this.gRepository.save(g);
-        this.tRepository.save(new Thread("ThreadTitle", 1L, 1L, g,
-                1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())));
 
-        this.cRepository.save(new Category("CAT1", g, new Timestamp(System.currentTimeMillis())));
+        Category c=new Category("CAT1", g, new Timestamp(System.currentTimeMillis()));
+        this.cRepository.save(c);
         this.cRepository.save(new Category("CAT2", g, new Timestamp(System.currentTimeMillis() - 10000000)));
+
+        Thread t=new Thread("ThreadTitle1", 1L, c.getCategory_id(), g,
+                1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+        t.setCategory(c);
+        this.tRepository.save(t);
+
+        this.tRepository.save(new Thread("ThreadTitle2", 1L,null, g,
+                1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())));
     }
 }

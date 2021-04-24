@@ -1,7 +1,9 @@
 package dev.backend.UniTalk.thread;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dev.backend.UniTalk.group.Group;
+import dev.backend.UniTalk.category.Category;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,12 +26,18 @@ public class Thread {
     @Basic(optional = false)
     private Long creator_id;
 
-    private Long category_id;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "category_id", nullable = true)
+    private Category category;
+
+    @Column(nullable = true)
+    private Long cat_id;
 
     private Long last_reply_author_id;
 
@@ -47,7 +55,7 @@ public class Thread {
                   Timestamp last_reply_timestamp) {
         this.title = title;
         this.creator_id = creator_id;
-        this.category_id = category_id;
+        this.cat_id = category_id;
         this.group = group;
         this.last_reply_author_id = last_reply_author_id;
         this.creation_timestamp = creation_timestamp;
