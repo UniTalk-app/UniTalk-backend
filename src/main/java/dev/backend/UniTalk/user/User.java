@@ -2,6 +2,7 @@ package dev.backend.UniTalk.user;
 
 import dev.backend.UniTalk.role.Role;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -20,16 +21,10 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "email")
         }
 )
+
+@NoArgsConstructor
 @Getter @Setter
 public class User {
-
-    public User() {}
-
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,6 +49,18 @@ public class User {
     @Email
     private String email;
 
+    public User(@NotBlank @Size(max = 20) String username,
+                @NotBlank @Size(max = 20) String firstName,
+                @NotBlank @Size(max = 20) String lastName,
+                @NotBlank @Size(max = 50) @Email String email,
+                @NotBlank String password) {
+        this.password = password;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",
@@ -75,7 +82,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", roles=" + roles +
                 '}';

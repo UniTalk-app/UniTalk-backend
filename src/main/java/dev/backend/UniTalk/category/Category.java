@@ -4,7 +4,6 @@ import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.thread.Thread;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Size;

@@ -22,7 +22,7 @@ public class UserLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User user = new User("username", "email", encoder.encode("qwerty"));
+        User user = new User("username", "firstName", "lastName", "email@email", encoder.encode("qwerty"));
         this.userRepository.save(user);
     }
 }

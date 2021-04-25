@@ -78,10 +78,10 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody User registerRequest) {
         if (
                 registerRequest.getEmail() == null ||
-                registerRequest.getUsername() == null ||
-                registerRequest.getPassword() == null ||
-                registerRequest.getFirstName() == null ||
-                registerRequest.getLastName() == null
+                        registerRequest.getUsername() == null ||
+                        registerRequest.getPassword() == null ||
+                        registerRequest.getFirstName() == null ||
+                        registerRequest.getLastName() == null
         ) {
             return ResponseEntity
                     .badRequest()
@@ -102,6 +102,8 @@ public class AuthController {
         // Create new user's account
         User user = new User(
                 registerRequest.getUsername(),
+                registerRequest.getFirstName(),
+                registerRequest.getLastName(),
                 registerRequest.getEmail(),
                 encoder.encode(registerRequest.getPassword()));
 
