@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.HashSet;
@@ -20,8 +21,8 @@ public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long category_id;
 
+    @Size(min = 1, max = 128, message = "Category name: must be between 1 and 128 chars")
     @Basic(optional = false)
-    @Column(length = 128)
     private String name;
 
     @JsonIgnore

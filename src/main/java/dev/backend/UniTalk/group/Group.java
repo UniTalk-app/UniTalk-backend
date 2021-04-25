@@ -4,6 +4,7 @@ import dev.backend.UniTalk.thread.Thread;
 import dev.backend.UniTalk.category.Category;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,8 +21,8 @@ public class Group {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long group_id;
 
+    @Size(min = 1, max = 128, message = "Group name: must be between 1 and 128 chars")
     @Basic(optional = false)
-    @Column(length = 128)
     private String group_name;
 
     @Basic(optional = false)

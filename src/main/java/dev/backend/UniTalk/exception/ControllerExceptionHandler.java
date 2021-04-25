@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.MethodNotAllowedException;
 
 import java.util.Date;
 import java.util.Objects;
@@ -36,6 +37,18 @@ public class ControllerExceptionHandler {
 
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
     }
+
+//    @ExceptionHandler(MethodNotAllowedException.class)
+//    public ResponseEntity<ErrorMessage> methodNotAllowedException(
+//            MethodNotAllowedException ex, WebRequest request) {
+//        ErrorMessage message = new ErrorMessage(
+//                HttpStatus.METHOD_NOT_ALLOWED.value(),
+//                new Date(),
+//                "Wrong page. Go back!",
+//                request.getDescription(false));
+//
+//        return new ResponseEntity<ErrorMessage>(message, HttpStatus.METHOD_NOT_ALLOWED);
+//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
