@@ -2,10 +2,13 @@ package dev.backend.UniTalk.thread;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 import dev.backend.UniTalk.group.GroupException;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.group.GroupRepository;
+import dev.backend.UniTalk.category.CategoryRepository;
+import dev.backend.UniTalk.category.Category;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,15 +31,19 @@ public class ThreadController {
 
     private final ThreadRepository threadRepository;
     private final GroupRepository groupRepository;
+    private final CategoryRepository categoryRepository;
 
     public ThreadController(ThreadRepository threadRepository,
-                            GroupRepository groupRepository) {
+                            GroupRepository groupRepository,
+                            CategoryRepository categoryRepository) {
         this.threadRepository = threadRepository;
         this.groupRepository = groupRepository;
+        this.categoryRepository=categoryRepository;
     }
 
     @GetMapping("/{idGroup}/thread/all")
     public CollectionModel<EntityModel<Thread>> all(@PathVariable Long idGroup) {
+
         Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
 
         List<EntityModel<Thread>> threads = threadRepository.findByGroup(group).stream()
@@ -67,8 +74,18 @@ public class ThreadController {
     public Thread newThread(@RequestBody Thread newThread, @PathVariable Long idGroup) {
 
         Thread thread = new Thread(newThread.getTitle(), newThread.getCreator_id(),
-                newThread.getCategory_id(), null, newThread.getLast_reply_author_id(),
+                null, null, newThread.getLast_reply_author_id(),
                 newThread.getCreation_timestamp(), newThread.getLast_reply_timestamp());
+
+        if(newThread.getCat_id()!=null)
+        {
+            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
+            if(category.isPresent())
+            {
+                thread.setCategory(category.get());
+                thread.setCat_id(newThread.getCat_id());
+            }
+        }
 
         return groupRepository.findById(idGroup).map(group -> {
             thread.setGroup(group);
@@ -89,11 +106,21 @@ public class ThreadController {
 
         thread.setTitle(newThread.getTitle());
         thread.setCreator_id(newThread.getCreator_id());
-        thread.setCategory_id(newThread.getCategory_id());
         thread.setGroup(group);
         thread.setLast_reply_author_id(newThread.getLast_reply_author_id());
         thread.setLast_reply_timestamp(newThread.getLast_reply_timestamp());
         thread.setCreation_timestamp(newThread.getCreation_timestamp());
+
+        if(newThread.getCat_id()!=null)
+        {
+            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
+            if(category.isPresent())
+            {
+                thread.setCategory(category.get());
+                thread.setCat_id(newThread.getCat_id());
+            }
+        }
+
         return threadRepository.save(thread);
     }
 
