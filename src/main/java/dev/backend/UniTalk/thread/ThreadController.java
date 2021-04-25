@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.hateoas.CollectionModel;
@@ -22,6 +23,7 @@ import org.springframework.hateoas.EntityModel;
 
 @RestController
 @RequestMapping("/api/group")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ThreadController {
 
     private final ThreadRepository threadRepository;
