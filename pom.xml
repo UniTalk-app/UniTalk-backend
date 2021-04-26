@@ -15,6 +15,9 @@
 	<description>Project for university course </description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.projectKey>UniTalk-app_UniTalk-backend</sonar.projectKey>
+		<sonar.organization>unitalk-app</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 
