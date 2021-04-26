@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,31 +30,27 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Size(min = 1, max=128, message = "password: must be between 1 and 128 chars")
     private String password;
 
-    @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 32, message = "username: must be between 1 and 32 chars")
     private String username;
 
-    @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 32, message = "firstname: must be between 1 and 32 chars")
     private String firstName;
 
-    @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 32, message = "lastname: must be between 1 and 32 chars")
     private String lastName;
 
-    @NotBlank
-    @Size(max = 50)
-    @Email
+    @Email(message = "use correct email")
+    @Size(min = 1, max = 64, message = "email: must be between 1 and 64 chars")
     private String email;
 
-    public User(@NotBlank @Size(max = 20) String username,
-                @NotBlank @Size(max = 20) String firstName,
-                @NotBlank @Size(max = 20) String lastName,
-                @NotBlank @Size(max = 50) @Email String email,
-                @NotBlank String password) {
+    public User(String username,
+                String firstName,
+                String lastName,
+                String email,
+                String password) {
         this.password = password;
         this.username = username;
         this.firstName = firstName;
