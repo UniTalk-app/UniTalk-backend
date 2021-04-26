@@ -58,7 +58,6 @@ public class GroupControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "556");
 
         HttpEntity<Group> request = new HttpEntity<>(group, headers);
 
@@ -66,6 +65,25 @@ public class GroupControllerTests
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 11), "{\"group_id\"");
+    }
+
+    @Test
+    @Sql(scripts = "/tests/GroupPrepare.sql")
+    public void GroupNewError() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/";
+
+        Group group = new Group("", 556L,new Timestamp(System.currentTimeMillis()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Group> request = new HttpEntity<>(group, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Objects.requireNonNull(response.getBody()).contains("Group name: must be between 1 and 128 chars"), true);
     }
 
     @Test
@@ -89,7 +107,26 @@ public class GroupControllerTests
 
     @Test
     @Sql(scripts = "/tests/GroupPrepare.sql")
-    public void GroupDelete() throws Exception
+    public void GroupReplaceError() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/555";
+
+        Group group = new Group("", 1L,new Timestamp(System.currentTimeMillis()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Group> request = new HttpEntity<>(group, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.PUT, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Objects.requireNonNull(response.getBody()).contains("Group name: must be between 1 and 128 chars"), true);
+    }
+
+    @Test
+    @Sql(scripts = "/tests/GroupPrepare.sql")
+    public void GroupDeleteOne() throws Exception
     {
         final String address = "http://localhost:" + port + "/api/group/555";
 
@@ -98,6 +135,20 @@ public class GroupControllerTests
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.DELETE, request, String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/GroupPrepare.sql")
+    public void GroupDeleteAll() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/";
+
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.DELETE, request, String.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }

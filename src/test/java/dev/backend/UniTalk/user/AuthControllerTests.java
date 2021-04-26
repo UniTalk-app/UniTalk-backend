@@ -9,6 +9,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -64,8 +66,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("null value in column username"));
     }
 
     @Test
@@ -84,8 +86,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("null value in column email"));
     }
 
     @Test
@@ -97,6 +99,7 @@ public class AuthControllerTests {
         user.setFirstName("first");
         user.setLastName("last");
         user.setEmail("test@a.com");
+        user.setPassword("");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -105,7 +108,7 @@ public class AuthControllerTests {
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("password: must be between 1 and 128 chars"));
     }
 
     @Test
@@ -124,8 +127,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("null value in column first_name"));
     }
 
     @Test
@@ -144,8 +147,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("{\"message\":\"Error: User data is not complete!\"}", response.getBody());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("null value in column last_name"));
     }
 
     @Test
@@ -165,8 +168,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
-        assertEquals("{\"message\":\"Error: Username is already taken!\"}", response.getBody());
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("Error: Username is already in use!\""));
     }
 
     @Test
@@ -177,7 +180,7 @@ public class AuthControllerTests {
         user.setUsername("user2");
         user.setFirstName("f");
         user.setLastName("l");
-        user.setEmail("email");
+        user.setEmail("email@email");
         user.setPassword("ha");
 
         HttpHeaders headers = new HttpHeaders();
@@ -186,8 +189,8 @@ public class AuthControllerTests {
 
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
-        assertEquals("{\"message\":\"Error: Email is already in use!\"}", response.getBody());
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("Error: Email is already in use!\""));
     }
 
     @Test
@@ -197,6 +200,7 @@ public class AuthControllerTests {
         User user = new User();
         user.setUsername("rafal");
         user.setPassword("qwerty");
+        user.setEmail("email@email");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -205,6 +209,6 @@ public class AuthControllerTests {
         ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertTrue(response.getBody().contains("\"type\":\"Bearer\",\"id\":1,\"username\":\"rafal\",\"email\":\"email\",\"roles\":"));
+        assertEquals(true, Objects.requireNonNull(response.getBody()).contains("\"username\":\"rafal\",\"email\":\"email@email\""));
     }
 }

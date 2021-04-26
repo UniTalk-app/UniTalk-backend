@@ -28,7 +28,8 @@ public class UserRepositoryTests {
     @Test
     void UserRepositorySavesUser() {
         entityManager.clear();
-        User user = new User("Username", "email", "password");
+        User user = new User("username", "firstName",
+                "lastName", "email@email", "password");
         entityManager.persistAndFlush(user);
         Assertions.assertEquals(1, userRepository.count());
         Assertions.assertEquals(user, userRepository.findById(user.getId()).get());
@@ -37,11 +38,12 @@ public class UserRepositoryTests {
     @Test
     void UserRepositoryFindsByAndExistsTests() {
         entityManager.clear();
-        User user = new User("Username", "email", "password");
+        User user = new User("username", "firstName",
+                "lastName", "email@email", "password");
         entityManager.persistAndFlush(user);
         Assertions.assertEquals(user, userRepository.findByUsername(user.getUsername()).get());
-        Assertions.assertTrue(userRepository.existsByEmail("email"));
-        Assertions.assertTrue(userRepository.existsByUsername("Username"));
+        Assertions.assertTrue(userRepository.existsByEmail("email@email"));
+        Assertions.assertTrue(userRepository.existsByUsername("username"));
         Assertions.assertFalse(userRepository.existsByEmail("eemail"));
         Assertions.assertFalse(userRepository.existsByUsername("UUsername"));
     }

@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
-import dev.backend.UniTalk.group.GroupException;
+import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.group.GroupRepository;
 import dev.backend.UniTalk.category.CategoryRepository;
 import dev.backend.UniTalk.category.Category;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -44,7 +48,8 @@ public class ThreadController {
     @GetMapping("/{idGroup}/thread/all")
     public CollectionModel<EntityModel<Thread>> all(@PathVariable Long idGroup) {
 
-        Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         List<EntityModel<Thread>> threads = threadRepository.findByGroup(group).stream()
                 .map(thread -> EntityModel.of(thread,
@@ -58,12 +63,14 @@ public class ThreadController {
     @GetMapping("/{idGroup}/thread/{idThread}")
     public EntityModel<Thread> one(@PathVariable Long idGroup, @PathVariable Long idThread) {
 
-        Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         Thread thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ThreadException(idThread));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
 
-        if(thread.getGroup() != group) throw new ThreadException(idThread);
+        if(thread.getGroup() != group)
+            throw new ResourceNotFoundException("Not found thread with id = " + idThread);
 
         return EntityModel.of(thread,
                 linkTo(methodOn(ThreadController.class).one(idGroup, idThread)).withSelfRel(),
@@ -71,7 +78,7 @@ public class ThreadController {
     }
 
     @PostMapping("/{idGroup}/thread")
-    public Thread newThread(@RequestBody Thread newThread, @PathVariable Long idGroup) {
+    public Thread newThread(@Valid @RequestBody Thread newThread, @PathVariable Long idGroup) {
 
         Thread thread = new Thread(newThread.getTitle(), newThread.getCreator_id(),
                 null, null, newThread.getLast_reply_author_id(),
@@ -79,30 +86,33 @@ public class ThreadController {
 
         if(newThread.getCat_id()!=null)
         {
-            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
-            if(category.isPresent())
-            {
-                thread.setCategory(category.get());
-                thread.setCat_id(newThread.getCat_id());
-            }
-        }
+            Category category = categoryRepository.findById(newThread.getCat_id())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCat_id()));
+
+            thread.setCategory(category);
+            thread.setCat_id(newThread.getCat_id());
+
+        } else
+            throw new ResourceNotFoundException("Category field cannot be null");
 
         return groupRepository.findById(idGroup).map(group -> {
             thread.setGroup(group);
             return threadRepository.save(thread);
-        }).orElseThrow(() -> new GroupException(idGroup));
+        }).orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
     }
 
 
     @PutMapping("/{idGroup}/thread/{idThread}")
-    public Thread replaceThread(@RequestBody Thread newThread,
+    public Thread replaceThread(@Valid @RequestBody Thread newThread,
                                 @PathVariable Long idGroup,
                                 @PathVariable Long idThread) {
 
-        Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
+
 
         Thread thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ThreadException(idThread));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
 
         thread.setTitle(newThread.getTitle());
         thread.setCreator_id(newThread.getCreator_id());
@@ -113,24 +123,36 @@ public class ThreadController {
 
         if(newThread.getCat_id()!=null)
         {
-            Optional<Category> category=categoryRepository.findById(newThread.getCat_id());
-            if(category.isPresent())
-            {
-                thread.setCategory(category.get());
-                thread.setCat_id(newThread.getCat_id());
-            }
-        }
+            Category category = categoryRepository.findById(newThread.getCat_id())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCat_id()));
+
+            thread.setCategory(category);
+            thread.setCat_id(newThread.getCat_id());
+
+        } else
+            throw new ResourceNotFoundException("Category field cannot be null");
 
         return threadRepository.save(thread);
     }
 
     @DeleteMapping("/{idGroup}/thread/{idThread}")
-    public void deleteThread(@PathVariable Long idGroup, @PathVariable Long idThread) {
-        Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
+    public ResponseEntity<HttpStatus> deleteOne(@PathVariable Long idGroup, @PathVariable Long idThread) {
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         Thread thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ThreadException(idThread));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
 
         threadRepository.deleteById(idThread);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{idGroup}/thread/")
+    public ResponseEntity<HttpStatus> deleteAll(@PathVariable Long idGroup) {
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
+
+        threadRepository.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

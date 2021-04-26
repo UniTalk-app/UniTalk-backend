@@ -59,7 +59,6 @@ public class CategoryControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Category> request = new HttpEntity<>(category, headers);
 
@@ -67,6 +66,25 @@ public class CategoryControllerTests
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(Objects.requireNonNull(response.getBody()).substring(0, 14), "{\"category_id\"");
+    }
+
+    @Test
+    @Sql(scripts = "/tests/CategoryPrepare.sql")
+    public void CategoryNewError() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/555/category";
+
+        Category category=new Category("", null,new Timestamp(System.currentTimeMillis()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Category> request = new HttpEntity<>(category, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Objects.requireNonNull(response.getBody()).contains("Category name: must be between 1 and 128 chars"), true);
     }
 
     @Test
@@ -90,9 +108,42 @@ public class CategoryControllerTests
 
     @Test
     @Sql(scripts = "/tests/CategoryPrepare.sql")
-    public void CategoryDelete() throws Exception
+    public void CategoryReplaceError() throws Exception
     {
         final String address = "http://localhost:" + port + "/api/group/555/category/55";
+
+        Category category = new Category("", null,new Timestamp(System.currentTimeMillis()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Category> request = new HttpEntity<>(category, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.PUT, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Objects.requireNonNull(response.getBody()).contains("Category name: must be between 1 and 128 chars"), true);
+    }
+
+    @Test
+    @Sql(scripts = "/tests/CategoryPrepare.sql")
+    public void CategoryDeleteOne() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/555/category/55";
+
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(address, HttpMethod.DELETE, request, String.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    @Sql(scripts = "/tests/CategoryPrepare.sql")
+    public void CategoryDeleteAll() throws Exception
+    {
+        final String address = "http://localhost:" + port + "/api/group/555/category/";
 
         HttpHeaders headers = new HttpHeaders();
 

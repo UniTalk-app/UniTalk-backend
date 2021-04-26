@@ -4,10 +4,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dev.backend.UniTalk.group.GroupException;
+import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.group.GroupRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
 import org.springframework.http.ResponseEntity;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/group")
@@ -42,7 +45,8 @@ public class CategoryController
     @GetMapping("/{idGroup}/category/all")
     public CollectionModel<EntityModel<Category>> all(@PathVariable Long idGroup)
     {
-        Group group=groupRepository.findById(idGroup).orElseThrow(()->new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         List<EntityModel<Category>> categories = categoryRepository.findByGroup(group).stream()
                 .map(category -> EntityModel.of(category,
@@ -57,11 +61,13 @@ public class CategoryController
     public EntityModel<Category> one(@PathVariable Long idGroup,@PathVariable Long idCategory)
     {
         Category category = categoryRepository.findById(idCategory)
-                .orElseThrow(() -> new CategoryException(idCategory));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + idCategory));
 
-        Group group=groupRepository.findById(idGroup).orElseThrow(()->new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
-        if(category.getGroup()!= group)throw new CategoryException(idCategory);
+        if(category.getGroup()!= group)
+            throw new ResourceNotFoundException("Not found category with id = " + idCategory);
 
         return EntityModel.of(category,
                 linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
@@ -69,9 +75,10 @@ public class CategoryController
     }
 
     @PostMapping("/{idGroup}/category")
-    public ResponseEntity<?> newCategory( @PathVariable Long idGroup,@RequestBody Category newCategory)
+    public ResponseEntity<?> newCategory(@Valid @RequestBody Category newCategory, @PathVariable Long idGroup)
     {
-        Group group=groupRepository.findById(idGroup).orElseThrow(()->new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         Category category = new Category(newCategory.getName(), group, newCategory.getCreation_timestamp());
         categoryRepository.save(category);
@@ -82,14 +89,15 @@ public class CategoryController
     }
 
     @PutMapping("/{idGroup}/category/{idCategory}")
-    ResponseEntity<?> replaceCategory(@RequestBody Category newCategory,
+    ResponseEntity<?> replaceCategory(@Valid @RequestBody Category newCategory,
                                       @PathVariable Long idGroup,
                                       @PathVariable Long idCategory)
     {
-        Group group=groupRepository.findById(idGroup).orElseThrow(()->new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         Category category = categoryRepository.findById(idCategory)
-                .orElseThrow(() -> new CategoryException(idCategory));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + idCategory));
 
         category.setName(newCategory.getName());
         category.setCreation_timestamp(newCategory.getCreation_timestamp());
@@ -106,12 +114,24 @@ public class CategoryController
     }
 
     @DeleteMapping("/{idGroup}/category/{idCategory}")
-    ResponseEntity<?> deleteCategory(@PathVariable Long idGroup,@PathVariable Long idCategory)
+    public ResponseEntity<HttpStatus> deleteOne(@PathVariable Long idGroup, @PathVariable Long idCategory)
     {
-        Group group = groupRepository.findById(idGroup).orElseThrow(() -> new GroupException(idGroup));
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         categoryRepository.deleteById(idCategory);
 
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{idGroup}/category/")
+    public ResponseEntity<HttpStatus> deleteAll(@PathVariable Long idGroup)
+    {
+        Group group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
+
+        categoryRepository.deleteAll();
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

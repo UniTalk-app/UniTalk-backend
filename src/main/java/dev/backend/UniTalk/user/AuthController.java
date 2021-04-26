@@ -7,13 +7,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import dev.backend.UniTalk.exception.UserAuthenticationException;
 import dev.backend.UniTalk.role.ERole;
 import dev.backend.UniTalk.role.Role;
-import dev.backend.UniTalk.user.User;
 import dev.backend.UniTalk.payload.response.JwtResponse;
 import dev.backend.UniTalk.payload.response.MessageResponse;
 import dev.backend.UniTalk.role.RoleRepository;
-import dev.backend.UniTalk.user.UserRepository;
 import dev.backend.UniTalk.security.jwt.JwtUtils;
 import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,34 +72,19 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Validated
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User registerRequest) {
-        if (
-                registerRequest.getEmail() == null ||
-                registerRequest.getUsername() == null ||
-                registerRequest.getPassword() == null ||
-                registerRequest.getFirstName() == null ||
-                registerRequest.getLastName() == null
-        ) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: User data is not complete!"));
-        }
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User registerRequest) throws UserAuthenticationException {
 
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
+        if (userRepository.existsByUsername(registerRequest.getUsername()))
+            throw  new UserAuthenticationException("Error: Username is already in use!");
+
+        if (userRepository.existsByEmail(registerRequest.getEmail()))
+            throw new UserAuthenticationException("Error: Email is already in use!");
 
         // Create new user's account
         User user = new User(
                 registerRequest.getUsername(),
+                registerRequest.getFirstName(),
+                registerRequest.getLastName(),
                 registerRequest.getEmail(),
                 encoder.encode(registerRequest.getPassword()));
 
