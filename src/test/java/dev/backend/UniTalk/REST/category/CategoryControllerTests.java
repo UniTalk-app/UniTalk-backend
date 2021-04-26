@@ -59,7 +59,6 @@ public class CategoryControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Category> request = new HttpEntity<>(category, headers);
 
@@ -79,7 +78,6 @@ public class CategoryControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Category> request = new HttpEntity<>(category, headers);
 

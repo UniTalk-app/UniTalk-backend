@@ -75,7 +75,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody User registerRequest) throws UserAuthenticationException {
 
         if (userRepository.existsByUsername(registerRequest.getUsername()))
-            throw  new UserAuthenticationException("Error: Email is already in use!");
+            throw  new UserAuthenticationException("Error: Username is already in use!");
 
         if (userRepository.existsByEmail(registerRequest.getEmail()))
             throw new UserAuthenticationException("Error: Email is already in use!");

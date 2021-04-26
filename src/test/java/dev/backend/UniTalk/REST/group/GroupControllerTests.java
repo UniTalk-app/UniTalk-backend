@@ -58,7 +58,6 @@ public class GroupControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "556");
 
         HttpEntity<Group> request = new HttpEntity<>(group, headers);
 
@@ -78,7 +77,6 @@ public class GroupControllerTests
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "556");
 
         HttpEntity<Group> request = new HttpEntity<>(group, headers);
 

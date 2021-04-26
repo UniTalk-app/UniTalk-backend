@@ -42,8 +42,8 @@ public class UserRepositoryTests {
                 "lastName", "email@email", "password");
         entityManager.persistAndFlush(user);
         Assertions.assertEquals(user, userRepository.findByUsername(user.getUsername()).get());
-        Assertions.assertTrue(userRepository.existsByEmail("email"));
-        Assertions.assertTrue(userRepository.existsByUsername("Username"));
+        Assertions.assertTrue(userRepository.existsByEmail("email@email"));
+        Assertions.assertTrue(userRepository.existsByUsername("username"));
         Assertions.assertFalse(userRepository.existsByEmail("eemail"));
         Assertions.assertFalse(userRepository.existsByUsername("UUsername"));
     }

@@ -48,22 +48,10 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(MethodNotAllowedException.class)
-//    public ResponseEntity<ErrorMessage> methodNotAllowedException(
-//            MethodNotAllowedException ex, WebRequest request) {
-//        ErrorMessage message = new ErrorMessage(
-//                HttpStatus.METHOD_NOT_ALLOWED.value(),
-//                new Date(),
-//                "Wrong page. Go back!",
-//                request.getDescription(false));
-//
-//        return new ResponseEntity<ErrorMessage>(message, HttpStatus.METHOD_NOT_ALLOWED);
-//    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
 
-        String usefulMsg = ex.getCause().getCause().getMessage();
+        String usefulMsg = ex.getCause().getCause().getMessage().replace("\"", "");
         int index = usefulMsg.indexOf("\n");
         if (index != -1)
             usefulMsg= usefulMsg.substring(0 , index);

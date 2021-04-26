@@ -58,7 +58,6 @@ public class ThreadControllerTests {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Thread> request = new HttpEntity<>(thread, headers);
 
@@ -79,7 +78,6 @@ public class ThreadControllerTests {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Thread> request = new HttpEntity<>(thread, headers);
 
@@ -100,7 +98,6 @@ public class ThreadControllerTests {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("idGroup", "555");
 
         HttpEntity<Thread> request = new HttpEntity<>(thread, headers);
 

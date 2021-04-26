@@ -30,18 +30,23 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Basic(optional = false)
     @Size(min = 1, max=128, message = "password: must be between 1 and 128 chars")
     private String password;
 
+    @Basic(optional = false)
     @Size(min = 1, max = 32, message = "username: must be between 1 and 32 chars")
     private String username;
 
+    @Basic(optional = false)
     @Size(min = 1, max = 32, message = "firstname: must be between 1 and 32 chars")
     private String firstName;
 
+    @Basic(optional = false)
     @Size(min = 1, max = 32, message = "lastname: must be between 1 and 32 chars")
     private String lastName;
 
+    @Basic(optional = false)
     @Email(message = "use correct email")
     @Size(min = 1, max = 64, message = "email: must be between 1 and 64 chars")
     private String email;
