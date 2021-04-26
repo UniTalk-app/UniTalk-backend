@@ -91,6 +91,27 @@ public class ThreadControllerTests {
 
     @Test
     @Sql(scripts = "/tests/ThreadPrepare.sql")
+    public void ThreadNewGroupError() throws Exception {
+
+        final String address = "http://localhost:" + port + "/api/group/77/thread";
+
+        Thread thread = new Thread("random name", 1L, 44L, null,
+                1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("idGroup", "555");
+
+        HttpEntity<Thread> request = new HttpEntity<>(thread, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(address, request, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Objects.requireNonNull(response.getBody()).contains("Not found group with id = 77"), true);
+    }
+
+    @Test
+    @Sql(scripts = "/tests/ThreadPrepare.sql")
     public void ThreadReplace() throws Exception {
 
         final String address = "http://localhost:" + port + "/api/group/555/thread/444";
