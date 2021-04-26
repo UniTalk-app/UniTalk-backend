@@ -1,7 +1,11 @@
 # UniTalk-backend
-
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/dashboard?id=UniTalk-app_UniTalk-backend)
+<br><br>
 [![CI](https://github.com/UniTalk-app/UniTalk-backend/actions/workflows/main.yml/badge.svg)](https://github.com/UniTalk-app/UniTalk-backend/actions/workflows/main.yml)
-
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=UniTalk-app_UniTalk-backend&metric=bugs)](https://sonarcloud.io/dashboard?id=UniTalk-app_UniTalk-backend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=UniTalk-app_UniTalk-backend&metric=code_smells)](https://sonarcloud.io/dashboard?id=UniTalk-app_UniTalk-backend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=UniTalk-app_UniTalk-backend&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=UniTalk-app_UniTalk-backend)
+<br>
 Created in Java/Spring with start.spring.io <br>
 Database server: PostgreSQL
 
