@@ -19,7 +19,7 @@ public class Thread {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long thread_id;
 
-    @Size(min = 1, max = 128, message = "Group name: must be between 1 and 128 chars")
+    @Size(min = 1, max = 128, message = "Thread name: must be between 1 and 128 chars")
     @Basic(optional = false)
     private String title;
 
