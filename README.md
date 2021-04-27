@@ -24,6 +24,9 @@ Check out [our wiki](https://github.com/UniTalk-app/UniTalk-backend/wiki) for do
 
 To use tests you will need to download [Maven](https://maven.apache.org/download.cgi) and run `mvn test`
 
+## Using hot swap
+App will be automagically hot swapped if you build project (eg Hammer icon in IntelliJ). However if you use IntelliJ you can skip the boring human action to click the button, just follow [this 3 easy steps!](https://dzone.com/articles/spring-boot-application-live-reload-hot-swap-with)
+
 # Developer info
 To start further development of the project one must:
 
