@@ -3,12 +3,14 @@ package dev.backend.UniTalk.thread;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.category.Category;
+import dev.backend.UniTalk.chat.message.Message;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "threads")
@@ -35,6 +37,9 @@ public class Thread {
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
+
+    @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Message> messageList;
 
     @Column(nullable = true)
     private Long catId;
