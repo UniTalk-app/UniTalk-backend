@@ -2,8 +2,14 @@ package dev.backend.UniTalk.group;
 
 import java.util.List;
 
+import dev.backend.UniTalk.exception.ResourceNotFoundException;
+import dev.backend.UniTalk.security.services.UserDetailsImpl;
+import dev.backend.UniTalk.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,5 +74,22 @@ public class GroupController {
     @DeleteMapping("/")
     public ResponseEntity<HttpStatus> deleteAll() {
         return groupControllerService.deleteAll();
+    }
+
+    @GetMapping("/join/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<HttpStatus> joinGroup(@PathVariable Long id, Authentication authentication) {
+        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        var user = userRepository.findByUsername(userDetails.getUsername()).get();
+        if (groupRepository.findById(id).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        var groupToJoin = groupRepository.findById(id).get();
+        var groups = user.getGroups();
+        groups.add(groupToJoin);
+        user.setGroups(groups);
+
+        userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
