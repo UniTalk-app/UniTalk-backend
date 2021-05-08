@@ -70,6 +70,6 @@ public class CategoryController
 
     @DeleteMapping("/{idGroup}/category/")
     public ResponseEntity<HttpStatus> deleteAll(@PathVariable Long idGroup) {
-        return categoryControllerService.deleteAll(idGroup);
+        return categoryControllerService.deleteAll();
     }
 }

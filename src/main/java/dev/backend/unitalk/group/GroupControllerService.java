@@ -16,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class GroupControllerService {
 
     private final GroupRepository repository;
-    private final static String notFoundGroup = "Not found group with id = ";
+    private static final String NotFoundGroup = "Not found group with id = ";
 
     public GroupControllerService(GroupRepository repository) {
         this.repository = repository;
@@ -34,7 +34,7 @@ public class GroupControllerService {
     public Group one(Long id) {
 
         return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(notFoundGroup + id));
+                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + id));
     }
 
     public Group newGroup(Group newGroup) {
@@ -54,7 +54,7 @@ public class GroupControllerService {
                     group.setCreationTimestamp(newGroup.getCreationTimestamp());
                     return repository.save(group);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException(notFoundGroup + id));
+                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + id));
     }
 
     public ResponseEntity<HttpStatus> deleteOne(Long id) {
