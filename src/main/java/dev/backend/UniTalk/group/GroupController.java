@@ -3,6 +3,7 @@ package dev.backend.UniTalk.group;
 import java.util.List;
 
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
+import dev.backend.UniTalk.payload.response.MessageResponse;
 import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import dev.backend.UniTalk.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,19 +78,12 @@ public class GroupController {
     }
 
     @GetMapping("/join/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<HttpStatus> joinGroup(@PathVariable Long id, Authentication authentication) {
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var user = userRepository.findByUsername(userDetails.getUsername()).get();
-        if (groupRepository.findById(id).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        var groupToJoin = groupRepository.findById(id).get();
-        var groups = user.getGroups();
-        groups.add(groupToJoin);
-        user.setGroups(groups);
+    public ResponseEntity<MessageResponse> joinGroup(@PathVariable Long id, Authentication authentication) {
+        return groupControllerService.joinLeaveGroup(id, authentication, 0);
+    }
 
-        userRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/leave/{id}")
+    public ResponseEntity<MessageResponse> leaveGroup(@PathVariable Long id, Authentication authentication) {
+        return groupControllerService.joinLeaveGroup(id, authentication, 1);
     }
 }
