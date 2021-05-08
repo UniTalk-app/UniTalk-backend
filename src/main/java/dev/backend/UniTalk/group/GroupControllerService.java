@@ -63,7 +63,7 @@ public class GroupControllerService {
     }
 
     public ResponseEntity<HttpStatus> deleteOne(Long id) {
-        groupRepository.findById(id)
+        var group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + id));
 
         groupRepository.deleteById(id);
@@ -77,17 +77,22 @@ public class GroupControllerService {
 
     public ResponseEntity<MessageResponse> joinLeaveGroup(Long id, Authentication authentication, int method) {
         var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var user = userRepository.findByUsername(userDetails.getUsername()).get();
-        if (groupRepository.findById(id).isEmpty()) {
+        var user = userRepository.findByUsername(userDetails.getUsername());
+        if (user.isEmpty()) {
+            return ResponseEntity.status(500).body(new MessageResponse("ERROR: Server error"));
+        }
+
+        var targetGroup = groupRepository.findById(id);
+        if (targetGroup.isEmpty()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("ERROR: Invalid request!"));
         }
-        var targetGroup = groupRepository.findById(id).get();
-        var groups = user.getGroups();
+
+        var groups = user.get().getGroups();
         if (
-                method == 0 && groups.contains(targetGroup) ||
-                method != 0 && !groups.contains(targetGroup)
+                method == 0 && groups.contains(targetGroup.get()) ||
+                method != 0 && !groups.contains(targetGroup.get())
         ) {
             return ResponseEntity
                     .badRequest()
@@ -95,14 +100,14 @@ public class GroupControllerService {
         }
 
         if (method == 0) {
-            groups.add(targetGroup);
+            groups.add(targetGroup.get());
         }
         else {
-            groups.remove(targetGroup);
+            groups.remove(targetGroup.get());
         }
-        user.setGroups(groups);
+        user.get().setGroups(groups);
 
-        userRepository.save(user);
+        userRepository.save(user.get());
         var methodName = method == 0 ? "joined" : "left";
         return ResponseEntity.ok(new MessageResponse("Successfully " + methodName));
     }

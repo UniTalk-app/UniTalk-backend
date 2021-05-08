@@ -14,21 +14,24 @@ public class UserLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserLoader(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserLoader(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.encoder = encoder;
     }
-
-    @Autowired
-    PasswordEncoder encoder;
 
     @Override
     public void run(String... args) throws Exception {
         User user = new User("username", "firstName", "lastName", "email@email", encoder.encode("qwerty"));
         var roles = user.getRoles();
-        roles.add(roleRepository.findByName(ERole.ROLE_USER).get());
+        var role = roleRepository.findByName(ERole.ROLE_USER);
+        if (role.isEmpty()) {
+            return;
+        }
+        roles.add(role.get());
         user.setRoles(roles);
         this.userRepository.save(user);
     }

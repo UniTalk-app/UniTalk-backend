@@ -2,14 +2,9 @@ package dev.backend.UniTalk.group;
 
 import java.util.List;
 
-import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.payload.response.MessageResponse;
-import dev.backend.UniTalk.security.services.UserDetailsImpl;
-import dev.backend.UniTalk.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
