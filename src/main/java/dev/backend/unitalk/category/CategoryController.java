@@ -65,7 +65,7 @@ public class CategoryController
 
     @DeleteMapping("/{idGroup}/category/{idCategory}")
     public ResponseEntity<HttpStatus> deleteOne(@PathVariable Long idGroup, @PathVariable Long idCategory) {
-        return categoryControllerService.deleteOne(idGroup, idCategory);
+        return categoryControllerService.deleteOne(idCategory);
     }
 
     @DeleteMapping("/{idGroup}/category/")

@@ -19,8 +19,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CategoryControllerService{
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
-    private final String notFoundGroup = "Not found group with id = ";
-    private final String notFoundCategory = "Not found category with id = ";
+    private final static String notFoundGroup = "Not found group with id = ";
+    private final static String notFoundCategory = "Not found category with id = ";
 
     public CategoryControllerService(CategoryRepository categoryRepository,GroupRepository groupRepository) {
         this.categoryRepository = categoryRepository;
@@ -64,10 +64,8 @@ public class CategoryControllerService{
     }
 
     EntityModel<Category> replaceCategory(Category newCategory, Long idGroup, Long idCategory) {
-        //Group group = groupRepository.findById(idGroup)
-        //        .orElseThrow(() -> new ResourceNotFoundException(notFoundGroup + idGroup));
 
-        Category category = categoryRepository.findById(idCategory)
+        var category = categoryRepository.findById(idCategory)
                 .orElseThrow(() -> new ResourceNotFoundException(notFoundCategory + idCategory));
 
         category.setName(newCategory.getName());
@@ -80,9 +78,7 @@ public class CategoryControllerService{
                 linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
     }
 
-    public ResponseEntity<HttpStatus> deleteOne(Long idGroup, Long idCategory) {
-       // Group group = groupRepository.findById(idGroup)
-        //        .orElseThrow(() -> new ResourceNotFoundException(notFoundGroup + idGroup));
+    public ResponseEntity<HttpStatus> deleteOne(Long idCategory) {
 
         categoryRepository.deleteById(idCategory);
 

@@ -1,6 +1,5 @@
 package dev.backend.unitalk.security.services;
 
-import dev.backend.unitalk.user.User;
 import dev.backend.unitalk.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

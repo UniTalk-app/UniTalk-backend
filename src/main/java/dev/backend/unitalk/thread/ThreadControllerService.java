@@ -3,7 +3,6 @@ package dev.backend.unitalk.thread;
 import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.category.CategoryRepository;
 import dev.backend.unitalk.exception.ResourceNotFoundException;
-import dev.backend.unitalk.group.Group;
 import dev.backend.unitalk.group.GroupRepository;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -22,9 +21,9 @@ public class ThreadControllerService {
     private final ThreadRepository threadRepository;
     private final GroupRepository groupRepository;
     private final CategoryRepository categoryRepository;
-    private final String notFoundGroup = "Not found group with id = ";
-    private final String notFoundThread = "Not found thread with id = ";
-    private final String notFoundCategory = "Not found category with id = ";
+    private final static String notFoundGroup = "Not found group with id = ";
+    private final static String notFoundThread = "Not found thread with id = ";
+    private final static String notFoundCategory = "Not found category with id = ";
 
 
     public ThreadControllerService(ThreadRepository threadRepository,
@@ -102,7 +101,7 @@ public class ThreadControllerService {
 
         if(newThread.getCatId()!=null)
         {
-            Category category = categoryRepository.findById(newThread.getCatId())
+            var category = categoryRepository.findById(newThread.getCatId())
                     .orElseThrow(() -> new ResourceNotFoundException(notFoundCategory + newThread.getCatId()));
 
             thread.setCategory(category);
@@ -114,20 +113,14 @@ public class ThreadControllerService {
         return threadRepository.save(thread);
     }
 
-    public ResponseEntity<HttpStatus> deleteOne(Long idGroup, Long idThread) {
-        //var group = groupRepository.findById(idGroup)
-        //        .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
-
-        // var thread = threadRepository.findById(idThread)
-        //      .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
+    public ResponseEntity<HttpStatus> deleteOne(Long idThread) {
 
         threadRepository.deleteById(idThread);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<HttpStatus> deleteAll(Long idGroup) {
-        //var group = groupRepository.findById(idGroup)
-        //      .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
+    public ResponseEntity<HttpStatus> deleteAll() {
+
 
         threadRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
