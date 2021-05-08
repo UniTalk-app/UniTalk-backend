@@ -18,8 +18,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CategoryControllerService{
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
-    private static final String NotFoundGroup = "Not found group with id = ";
-    private static final String NotFoundCategory = "Not found category with id = ";
+    private static final String NOT_FOUND_GROUP = "Not found group with id = ";
+    private static final String NOT_FOUND_CATEGORY = "Not found category with id = ";
 
     public CategoryControllerService(CategoryRepository categoryRepository,GroupRepository groupRepository) {
         this.categoryRepository = categoryRepository;
@@ -28,7 +28,7 @@ public class CategoryControllerService{
 
     public List<EntityModel<Category>> all(Long idGroup) {
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
         return categoryRepository.findByGroup(group).stream()
                 .map(category -> EntityModel.of(category,
@@ -39,20 +39,20 @@ public class CategoryControllerService{
 
     public Category one(Long idGroup, Long idCategory) {
         var category = categoryRepository.findById(idCategory)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundCategory + idCategory));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + idCategory));
 
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
         if(category.getGroup()!= group)
-            throw new ResourceNotFoundException(NotFoundCategory + idCategory);
+            throw new ResourceNotFoundException(NOT_FOUND_CATEGORY + idCategory);
 
         return category;
     }
 
     public ResponseEntity<Category> newCategory(Category newCategory, Long idGroup) {
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
         var category = new Category(newCategory.getName(), group, newCategory.getCreationTimestamp());
         categoryRepository.save(category);
@@ -65,7 +65,7 @@ public class CategoryControllerService{
     EntityModel<Category> replaceCategory(Category newCategory, Long idGroup, Long idCategory) {
 
         var category = categoryRepository.findById(idCategory)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundCategory + idCategory));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + idCategory));
 
         category.setName(newCategory.getName());
         category.setCreationTimestamp(newCategory.getCreationTimestamp());

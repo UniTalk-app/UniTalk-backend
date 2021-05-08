@@ -20,9 +20,9 @@ public class ThreadControllerService {
     private final ThreadRepository threadRepository;
     private final GroupRepository groupRepository;
     private final CategoryRepository categoryRepository;
-    private static final String NotFoundGroup = "Not found group with id = ";
-    private static final String NotFoundThread = "Not found thread with id = ";
-    private static final String NotFoundCategory = "Not found category with id = ";
+    private static final String NOT_FOUND_GROUP = "Not found group with id = ";
+    private static final String NOT_FOUND_THREAD = "Not found thread with id = ";
+    private static final String NOT_FOUND_CATEGORY = "Not found category with id = ";
 
 
     public ThreadControllerService(ThreadRepository threadRepository,
@@ -36,7 +36,7 @@ public class ThreadControllerService {
     public List<EntityModel<Thread>> all(Long idGroup) {
 
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException( NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException( NOT_FOUND_GROUP + idGroup));
 
         return threadRepository.findByGroup(group).stream()
                 .map(thread -> EntityModel.of(thread,
@@ -48,13 +48,13 @@ public class ThreadControllerService {
     public Thread one(Long idGroup, Long idThread) {
 
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
         var thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundThread + idThread));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_THREAD + idThread));
 
         if(thread.getGroup() != group)
-            throw new ResourceNotFoundException(NotFoundThread + idThread);
+            throw new ResourceNotFoundException(NOT_FOUND_THREAD + idThread);
 
         return thread;
     }
@@ -68,7 +68,7 @@ public class ThreadControllerService {
         if(newThread.getCatId()!=null)
         {
             var category = categoryRepository.findById(newThread.getCatId())
-                    .orElseThrow(() -> new ResourceNotFoundException(NotFoundCategory + newThread.getCatId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCatId()));
 
             thread.setCategory(category);
             thread.setCatId(newThread.getCatId());
@@ -79,17 +79,17 @@ public class ThreadControllerService {
         return groupRepository.findById(idGroup).map(group -> {
             thread.setGroup(group);
             return threadRepository.save(thread);
-        }).orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+        }).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
     }
 
     public Thread replaceThread(Thread newThread, Long idGroup, Long idThread) {
 
         var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundGroup + idGroup));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
 
         var thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ResourceNotFoundException(NotFoundThread + idThread));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_THREAD + idThread));
 
         thread.setTitle(newThread.getTitle());
         thread.setCreatorId(newThread.getCreatorId());
@@ -101,7 +101,7 @@ public class ThreadControllerService {
         if(newThread.getCatId()!=null)
         {
             var category = categoryRepository.findById(newThread.getCatId())
-                    .orElseThrow(() -> new ResourceNotFoundException(NotFoundCategory + newThread.getCatId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCatId()));
 
             thread.setCategory(category);
             thread.setCatId(newThread.getCatId());
