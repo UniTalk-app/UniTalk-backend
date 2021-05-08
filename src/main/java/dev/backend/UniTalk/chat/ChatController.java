@@ -32,8 +32,8 @@ public class ChatController
         this.messageRepository=messageRepository;
     }
 
-    //receive message to /chat/1 then resend msg to /topic/room/1
-    @MessageMapping("/chat/{roomId}")
+    //receive message to /room/1 then resend msg to /topic/room/1
+    @MessageMapping("/room/{roomId}")
     public void sendMessage(@DestinationVariable Long roomId,@Payload MessageDto messageDto)
     {
         //room == thread
