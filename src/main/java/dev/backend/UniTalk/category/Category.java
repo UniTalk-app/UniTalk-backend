@@ -19,7 +19,7 @@ import java.util.Set;
 @Getter @Setter
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
+    private Long categoryId;
 
     @Size(min = 1, max = 128, message = "Category name: must be between 1 and 128 chars")
     @Basic(optional = false)
@@ -34,19 +34,19 @@ public class Category {
     private Set<Thread> threads = new HashSet<>();
 
     @Basic(optional = false)
-    private Timestamp creation_timestamp;
+    private Timestamp creationTimestamp;
 
-    public Category(String name,Group group,Timestamp creation_timestamp)
+    public Category(String name,Group group,Timestamp creationTimestamp)
     {
         this.name=name;
         this.group=group;
-        this.creation_timestamp=creation_timestamp;
+        this.creationTimestamp=creationTimestamp;
     }
 
     @Override
     public String toString() {
         return "category{" +
-                "category_id=" + category_id +
+                "category_id=" + categoryId +
                 ", name='" + name + '\'' +
                 '}';
     }
@@ -56,11 +56,11 @@ public class Category {
         if (this == o) return true;
         if (!(o instanceof Category)) return false;
         Category category = (Category) o;
-        return category_id.equals(category.category_id);
+        return categoryId.equals(category.categoryId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(category_id);
+        return Objects.hash(categoryId);
     }
 }

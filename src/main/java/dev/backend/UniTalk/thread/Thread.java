@@ -1,7 +1,6 @@
 package dev.backend.UniTalk.thread;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.category.Category;
 import lombok.*;
@@ -18,14 +17,14 @@ import java.util.Objects;
 public class Thread {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long thread_id;
+    private Long threadId;
 
     @Size(min = 1, max = 128, message = "Thread name: must be between 1 and 128 chars")
     @Basic(optional = false)
     private String title;
 
     @Basic(optional = false)
-    private Long creator_id;
+    private Long creatorId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,29 +37,29 @@ public class Thread {
     private Category category;
 
     @Column(nullable = true)
-    private Long cat_id;
+    private Long catId;
 
-    private Long last_reply_author_id;
+    private Long lastReplyAuthorId;
 
     @Basic(optional = false)
-    private Timestamp creation_timestamp;
+    private Timestamp creationTimestamp;
 
-    private Timestamp last_reply_timestamp;
+    private Timestamp lastReplyTimestamp;
 
     public Thread(String title,
-                  Long creator_id,
-                  Long category_id,
+                  Long creatorId,
+                  Long catId,
                   Group group,
-                  Long last_reply_author_id,
-                  Timestamp creation_timestamp,
-                  Timestamp last_reply_timestamp) {
+                  Long lastReplyAuthorId,
+                  Timestamp creationTimestamp,
+                  Timestamp lastReplyTimestamp) {
         this.title = title;
-        this.creator_id = creator_id;
-        this.cat_id = category_id;
+        this.creatorId = creatorId;
+        this.catId = catId;
         this.group = group;
-        this.last_reply_author_id = last_reply_author_id;
-        this.creation_timestamp = creation_timestamp;
-        this.last_reply_timestamp = last_reply_timestamp;
+        this.lastReplyAuthorId = lastReplyAuthorId;
+        this.creationTimestamp = creationTimestamp;
+        this.lastReplyTimestamp = lastReplyTimestamp;
     }
 
     @Override
@@ -68,11 +67,11 @@ public class Thread {
         if (this == o) return true;
         if (!(o instanceof Thread)) return false;
         Thread thread = (Thread) o;
-        return thread_id.equals(thread.thread_id);
+        return threadId.equals(thread.threadId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(thread_id);
+        return Objects.hash(threadId);
     }
 }
