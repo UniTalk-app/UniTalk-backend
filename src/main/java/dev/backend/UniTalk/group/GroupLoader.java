@@ -38,7 +38,7 @@ public class GroupLoader implements CommandLineRunner {
         this.cRepository.save(c);
         this.cRepository.save(new Category("CAT2", g, new Timestamp(System.currentTimeMillis() - 10000000)));
 
-        Thread t=new Thread("ThreadTitle1", 1L, c.getCategory_id(), g,
+        Thread t=new Thread("ThreadTitle1", 1L, c.getCategoryId(), g,
                 1L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
         t.setCategory(c);
         this.tRepository.save(t);

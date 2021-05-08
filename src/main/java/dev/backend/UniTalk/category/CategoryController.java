@@ -50,7 +50,7 @@ public class CategoryController
 
         List<EntityModel<Category>> categories = categoryRepository.findByGroup(group).stream()
                 .map(category -> EntityModel.of(category,
-                        linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
+                        linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategoryId())).withSelfRel(),
                         linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories")))
                 .collect(Collectors.toList());
 
@@ -70,7 +70,7 @@ public class CategoryController
             throw new ResourceNotFoundException("Not found category with id = " + idCategory);
 
         return EntityModel.of(category,
-                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
+                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategoryId())).withSelfRel(),
                 linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
     }
 
@@ -80,11 +80,11 @@ public class CategoryController
         Group group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
-        Category category = new Category(newCategory.getName(), group, newCategory.getCreation_timestamp());
+        Category category = new Category(newCategory.getName(), group, newCategory.getCreationTimestamp());
         categoryRepository.save(category);
 
         return ResponseEntity
-                .created(URI.create("/" + idGroup + "/category/" + category.getCategory_id()))
+                .created(URI.create("/" + idGroup + "/category/" + category.getCategoryId()))
                 .body(category);
     }
 
@@ -100,12 +100,12 @@ public class CategoryController
                 .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + idCategory));
 
         category.setName(newCategory.getName());
-        category.setCreation_timestamp(newCategory.getCreation_timestamp());
+        category.setCreationTimestamp(newCategory.getCreationTimestamp());
 
         categoryRepository.save(category);
 
         EntityModel<Category> entityModel = EntityModel.of(category,
-                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategory_id())).withSelfRel(),
+                linkTo(methodOn(CategoryController.class).one(idGroup, category.getCategoryId())).withSelfRel(),
                 linkTo(methodOn(CategoryController.class).all(idGroup)).withRel("categories"));
 
         return ResponseEntity

@@ -39,7 +39,7 @@ public class GroupController {
 
         List<EntityModel<Group>> groups = repository.findAll().stream()
                 .map(group -> EntityModel.of(group,
-                        linkTo(methodOn(GroupController.class).one(group.getGroup_id())).withSelfRel(),
+                        linkTo(methodOn(GroupController.class).one(group.getGroupId())).withSelfRel(),
                         linkTo(methodOn(GroupController.class).all()).withRel("groups")))
                 .collect(Collectors.toList());
 
@@ -60,8 +60,8 @@ public class GroupController {
     @PostMapping("/")
     public Group newGroup(@Valid @RequestBody Group newGroup) {
 
-        Group group = new Group(newGroup.getGroup_name(), newGroup.getCreator_id(),
-                newGroup.getCreation_timestamp());
+        Group group = new Group(newGroup.getGroupName(), newGroup.getCreatorId(),
+                newGroup.getCreationTimestamp());
 
         return repository.save(group);
     }
@@ -72,9 +72,9 @@ public class GroupController {
 
         return repository.findById(id)
                 .map(group -> {
-                    group.setGroup_name(newGroup.getGroup_name());
-                    group.setCreator_id(newGroup.getCreator_id());
-                    group.setCreation_timestamp(newGroup.getCreation_timestamp());
+                    group.setGroupName(newGroup.getGroupName());
+                    group.setCreatorId(newGroup.getCreatorId());
+                    group.setCreationTimestamp(newGroup.getCreationTimestamp());
                     return repository.save(group);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + id));

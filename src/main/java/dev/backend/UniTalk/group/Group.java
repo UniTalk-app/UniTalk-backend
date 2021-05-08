@@ -19,17 +19,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Group {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long group_id;
+    private Long groupId;
 
     @Size(min = 1, max = 128, message = "Group name: must be between 1 and 128 chars")
     @Basic(optional = false)
-    private String group_name;
+    private String groupName;
 
     @Basic(optional = false)
-    private Long creator_id;
+    private Long creatorId;
 
     @Basic(optional = false)
-    private Timestamp creation_timestamp;
+    private Timestamp creationTimestamp;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -39,10 +39,10 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    public Group(String group_name, Long creator_id, Timestamp creation_timestamp) {
-        this.group_name = group_name;
-        this.creator_id = creator_id;
-        this.creation_timestamp = creation_timestamp;
+    public Group(String groupName, Long creatorId, Timestamp creationTimestamp) {
+        this.groupName = groupName;
+        this.creatorId = creatorId;
+        this.creationTimestamp = creationTimestamp;
     }
 
     @Override
@@ -50,21 +50,21 @@ public class Group {
         if (this == o) return true;
         if (!(o instanceof Group)) return false;
         Group group = (Group) o;
-        return group_id.equals(group.group_id);
+        return groupId.equals(group.groupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(group_id);
+        return Objects.hash(groupId);
     }
 
     @Override
     public String toString() {
         return "Group{" +
-                "group_id=" + group_id +
-                ", group_name='" + group_name + '\'' +
-                ", creator_id=" + creator_id +
-                ", creation_timestamp=" + creation_timestamp +
+                "group_id=" + groupId +
+                ", group_name='" + groupName + '\'' +
+                ", creator_id=" + creatorId +
+                ", creation_timestamp=" + creationTimestamp +
                 '}';
     }
 }

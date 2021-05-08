@@ -2,7 +2,6 @@ package dev.backend.UniTalk.thread;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.group.Group;
@@ -53,7 +52,7 @@ public class ThreadController {
 
         List<EntityModel<Thread>> threads = threadRepository.findByGroup(group).stream()
                 .map(thread -> EntityModel.of(thread,
-                        linkTo(methodOn(ThreadController.class).one(idGroup, thread.getThread_id())).withSelfRel(),
+                        linkTo(methodOn(ThreadController.class).one(idGroup, thread.getThreadId())).withSelfRel(),
                         linkTo(methodOn(ThreadController.class).all(idGroup)).withRel("threads")))
                 .collect(Collectors.toList());
 
@@ -80,17 +79,17 @@ public class ThreadController {
     @PostMapping("/{idGroup}/thread")
     public Thread newThread(@Valid @RequestBody Thread newThread, @PathVariable Long idGroup) {
 
-        Thread thread = new Thread(newThread.getTitle(), newThread.getCreator_id(),
-                null, null, newThread.getLast_reply_author_id(),
-                newThread.getCreation_timestamp(), newThread.getLast_reply_timestamp());
+        Thread thread = new Thread(newThread.getTitle(), newThread.getCreatorId(),
+                null, null, newThread.getLastReplyAuthorId(),
+                newThread.getCreationTimestamp(), newThread.getLastReplyTimestamp());
 
-        if(newThread.getCat_id()!=null)
+        if(newThread.getCatId()!=null)
         {
-            Category category = categoryRepository.findById(newThread.getCat_id())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCat_id()));
+            Category category = categoryRepository.findById(newThread.getCatId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCatId()));
 
             thread.setCategory(category);
-            thread.setCat_id(newThread.getCat_id());
+            thread.setCatId(newThread.getCatId());
 
         } else
             throw new ResourceNotFoundException("Category field cannot be null");
@@ -115,19 +114,19 @@ public class ThreadController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
 
         thread.setTitle(newThread.getTitle());
-        thread.setCreator_id(newThread.getCreator_id());
+        thread.setCreatorId(newThread.getCreatorId());
         thread.setGroup(group);
-        thread.setLast_reply_author_id(newThread.getLast_reply_author_id());
-        thread.setLast_reply_timestamp(newThread.getLast_reply_timestamp());
-        thread.setCreation_timestamp(newThread.getCreation_timestamp());
+        thread.setLastReplyAuthorId(newThread.getLastReplyAuthorId());
+        thread.setLastReplyTimestamp(newThread.getLastReplyTimestamp());
+        thread.setCreationTimestamp(newThread.getCreationTimestamp());
 
-        if(newThread.getCat_id()!=null)
+        if(newThread.getCatId()!=null)
         {
-            Category category = categoryRepository.findById(newThread.getCat_id())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCat_id()));
+            Category category = categoryRepository.findById(newThread.getCatId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + newThread.getCatId()));
 
             thread.setCategory(category);
-            thread.setCat_id(newThread.getCat_id());
+            thread.setCatId(newThread.getCatId());
 
         } else
             throw new ResourceNotFoundException("Category field cannot be null");
