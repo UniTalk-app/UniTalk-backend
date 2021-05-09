@@ -28,5 +28,5 @@ VALUES(11,'CategoryTitleTest', 11,'2013-04-23T18:25:43.511Z');
 
 INSERT INTO threads(thread_id, category_id, creation_timestamp, creator_id,
                     last_reply_author_id, last_reply_timestamp, title, group_id)
-VALUES(10, 10, '2012-04-23T18:25:43.511Z', 10, 10, '2012-04-23T18:25:43.511Z', 'ThreadNameSQLInsert', 10);
+VALUES(10, 10, '2012-04-23T18:25:43.511Z', 10, 10, '2012-04-23T18:25:43.511Z', 'ThreadTitleTest', 10);
 

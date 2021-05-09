@@ -1,29 +1,26 @@
 package dev.backend.UniTalk.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.backend.UniTalk.group.Group;
-import dev.backend.UniTalk.group.GroupController;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.validation.Valid;
+import java.sql.Timestamp;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Sql("/schema.sql")
 @SpringBootTest
 @AutoConfigureMockMvc
 public class GroupControllerTest {
@@ -31,42 +28,76 @@ public class GroupControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
+
     @Test
     @WithMockUser(username="user")
     void groupAll() throws Exception {
+
         mockMvc.perform(get("/api/group/all"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
+    void groupAllError() throws Exception {
+        mockMvc.perform(get("/api/group/all"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(status().reason(containsString("Unauthorized")))
+                .andExpect(unauthenticated());
+    }
+
+    @Test
     @WithMockUser(username="user")
     void groupOne() throws Exception {
-
+        mockMvc.perform(get("/api/group/{id}", 10))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.groupName").value("GroupTitleTest"));
     }
 
     @Test
     @WithMockUser(username="user")
     void groupNew() throws Exception {
-
+        mockMvc.perform( post("/api/group/")
+                .content(asJsonString(new Group("GroupTitleTestNew", 10L, new Timestamp(System.currentTimeMillis()))))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.groupName").value("GroupTitleTestNew"));
     }
 
     @Test
     @WithMockUser(username="user")
     void groupReplace() throws Exception {
-
+        mockMvc.perform( put("/api/group/{id}", 10)
+                .content(asJsonString(new Group("GroupTitleTestReplace", 10L, new Timestamp(System.currentTimeMillis()))))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.groupName").value("GroupTitleTestReplace"));
     }
-
 
     @Test
     @WithMockUser(username="user")
     void groupDeleteOne() throws Exception {
-
+        mockMvc.perform( delete("/api/group/{id}", 10) )
+                .andExpect(status().is(204));
     }
 
     @Test
     @WithMockUser(username="user")
     void groupDeleteAll() throws Exception {
+        mockMvc.perform( delete("/api/group/") )
+                .andExpect(status().is(204));
+    }
 
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
