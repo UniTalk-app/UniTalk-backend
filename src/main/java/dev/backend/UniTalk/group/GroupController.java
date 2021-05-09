@@ -2,8 +2,10 @@ package dev.backend.UniTalk.group;
 
 import java.util.List;
 
+import dev.backend.UniTalk.payload.response.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,5 +70,15 @@ public class GroupController {
     @DeleteMapping("/")
     public ResponseEntity<HttpStatus> deleteAll() {
         return groupControllerService.deleteAll();
+    }
+
+    @GetMapping("/join/{id}")
+    public ResponseEntity<MessageResponse> joinGroup(@PathVariable Long id, Authentication authentication) {
+        return groupControllerService.joinLeaveGroup(id, authentication, 0);
+    }
+
+    @GetMapping("/leave/{id}")
+    public ResponseEntity<MessageResponse> leaveGroup(@PathVariable Long id, Authentication authentication) {
+        return groupControllerService.joinLeaveGroup(id, authentication, 1);
     }
 }
