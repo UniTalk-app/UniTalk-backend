@@ -1,43 +1,36 @@
 package dev.backend.UniTalk.user;
 
 import dev.backend.UniTalk.role.ERole;
-import dev.backend.UniTalk.role.Role;
 import dev.backend.UniTalk.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Component
 public class UserLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserLoader(UserRepository userRepository,
-                      RoleRepository roleRepository) {
+    public UserLoader(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.encoder = encoder;
     }
-
-    @Autowired
-    PasswordEncoder encoder;
 
     @Override
     public void run(String... args) throws Exception {
         User user = new User("username", "firstName", "lastName", "email@email", encoder.encode("qwerty"));
-        this.userRepository.save(user);
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(userRole);
-
+        var roles = user.getRoles();
+        var role = roleRepository.findByName(ERole.ROLE_USER);
+        if (role.isEmpty()) {
+            return;
+        }
+        roles.add(role.get());
         user.setRoles(roles);
-        userRepository.save(user);
+        this.userRepository.save(user);
     }
 }

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/schema.sql")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GroupControllerTest {
+class GroupControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/schema.sql")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ThreadControllerTest {
+class ThreadControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
