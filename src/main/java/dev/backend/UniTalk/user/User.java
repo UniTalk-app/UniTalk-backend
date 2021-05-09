@@ -1,5 +1,6 @@
 package dev.backend.UniTalk.user;
 
+import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.role.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -70,6 +71,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_group",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private Set<Group> groups = new HashSet<>();
 
     // Overrides
 

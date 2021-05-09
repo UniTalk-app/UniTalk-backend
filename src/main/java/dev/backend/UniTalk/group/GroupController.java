@@ -2,8 +2,13 @@ package dev.backend.UniTalk.group;
 
 import java.util.List;
 
+import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +42,11 @@ public class GroupController {
 
         List<EntityModel<Group>> groups = groupControllerService.all();
         return CollectionModel.of(groups, linkTo(methodOn(GroupController.class).all()).withSelfRel());
+    }
+    @GetMapping("/owngroups")
+    public CollectionModel<Group> userGroups(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        List<Group> groups = groupControllerService.userGroups(userDetails);
+        return CollectionModel.of(groups,linkTo(methodOn(GroupController.class).all()).withSelfRel());
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package dev.backend.UniTalk.group;
 
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
+import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class GroupControllerService {
                         linkTo(methodOn(GroupController.class).one(group.getGroupId())).withSelfRel(),
                         linkTo(methodOn(GroupController.class).all()).withRel("groups")))
                 .collect(Collectors.toList());
+    }
+
+    public List<Group> userGroups(UserDetailsImpl userDetails){
+
+        Long userId = userDetails.getId();
+        return repository.findByCreatorId(userId);
     }
 
     public Group one(Long id) {
