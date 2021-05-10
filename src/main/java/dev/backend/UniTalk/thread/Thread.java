@@ -38,6 +38,7 @@ public class Thread {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Message> messageList;
 

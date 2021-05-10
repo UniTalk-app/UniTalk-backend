@@ -10,6 +10,7 @@ public class MessageDto
     private String content;
     private String sender;
     private Timestamp timestamp;
+//TODO... avatar of sender
 
     public MessageDto( String content,String sender,Timestamp timestamp)
     {
