@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Objects;
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "messages")
@@ -24,21 +23,20 @@ public class Message {
     private String content;
 
     @Basic(optional = false)
-    private String sender;
+    private Long senderId;
 
     @Basic(optional = false)
-    private Timestamp timestamp;
+    private Timestamp sendingTimestamp;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "thread_id", nullable = false)
     private Thread thread;
 
-    public Message( String content,String sender,Timestamp timestamp,Thread thread)
+    public Message(String content, Long senderId, Timestamp sendingTime, Thread thread)
     {
         this.content=content;
-        this.sender=sender;
-        this.timestamp=timestamp;
+        this.senderId = senderId;
+        this.sendingTimestamp = sendingTime;
         this.thread=thread;
     }
 
@@ -54,4 +52,5 @@ public class Message {
     public int hashCode() {
         return Objects.hash(message_id);
     }
+
 }

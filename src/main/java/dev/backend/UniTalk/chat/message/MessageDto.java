@@ -8,14 +8,14 @@ import lombok.*;
 public class MessageDto
 {
     private String content;
-    private String sender;
-    private Timestamp timestamp;
+    private String senderUsername;
+    private Timestamp sendingTimestamp;
 //TODO... avatar of sender
 
-    public MessageDto( String content,String sender,Timestamp timestamp)
+    public MessageDto( String content,String sender,Timestamp sendingTimestamp)
     {
         this.content=content;
-        this.sender=sender;
-        this.timestamp=timestamp;
+        this.senderUsername =sender;
+        this.sendingTimestamp = sendingTimestamp;
     }
 }
