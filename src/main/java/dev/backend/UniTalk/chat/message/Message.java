@@ -52,5 +52,4 @@ public class Message {
     public int hashCode() {
         return Objects.hash(message_id);
     }
-
 }
