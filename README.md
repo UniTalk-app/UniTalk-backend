@@ -20,6 +20,7 @@ Check out [our wiki](https://github.com/UniTalk-app/UniTalk-backend/wiki) for do
   
 # Setting up the project
 - Git clone repository
+- Install PostgreSQL (See [developer info](#developer-info))
 - Open the projects directory and type `./mvnw spring-boot:run ` in order to install dependencies and run application
 
 To use tests you will need to download [Maven](https://maven.apache.org/download.cgi) and run `mvn test`
@@ -36,6 +37,8 @@ To start further development of the project one must:
 - download and install IDE (suggested IntelliJ IDEA)
 - download and install PostgreSQL
 - DB connection info: src/main/resources/<b>application.properties</b>
+<br>(Or simply use docker for PostgreSQL):<br>
+`docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=passwd -d --rm postgres`
 
 # Comments
 - DB is in 'create-drop' mode, so that means every time the server
