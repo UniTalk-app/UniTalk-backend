@@ -3,12 +3,15 @@ package dev.backend.UniTalk.group;
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.payload.response.MessageResponse;
 import dev.backend.UniTalk.security.services.UserDetailsImpl;
+import dev.backend.UniTalk.user.User;
 import dev.backend.UniTalk.user.UserRepository;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +30,8 @@ public class GroupControllerService {
         this.userRepository = userRepository;
     }
 
-    public List<EntityModel<Group>> all() {
-
-        return groupRepository.findAll().stream()
-                .map(group -> EntityModel.of(group,
-                        linkTo(methodOn(GroupController.class).one(group.getGroupId())).withSelfRel(),
-                        linkTo(methodOn(GroupController.class).all()).withRel("groups")))
-                .collect(Collectors.toList());
+    public List<Group> all(User user) {
+        return new ArrayList<>(user.getGroups());
     }
 
     public Group one(Long id) {
@@ -75,13 +73,7 @@ public class GroupControllerService {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<MessageResponse> joinLeaveGroup(Long id, Authentication authentication, int method) {
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var user = userRepository.findByUsername(userDetails.getUsername());
-        if (user.isEmpty()) {
-            return ResponseEntity.status(500).body(new MessageResponse("ERROR: Server error"));
-        }
-
+    public ResponseEntity<MessageResponse> joinLeaveGroup(Long id, User user, int method) {
         var targetGroup = groupRepository.findById(id);
         if (targetGroup.isEmpty()) {
             return ResponseEntity
@@ -89,7 +81,7 @@ public class GroupControllerService {
                     .body(new MessageResponse("ERROR: Invalid request!"));
         }
 
-        var groups = user.get().getGroups();
+        var groups = user.getGroups();
         if (
                 method == 0 && groups.contains(targetGroup.get()) ||
                 method != 0 && !groups.contains(targetGroup.get())
@@ -105,9 +97,9 @@ public class GroupControllerService {
         else {
             groups.remove(targetGroup.get());
         }
-        user.get().setGroups(groups);
+        user.setGroups(groups);
 
-        userRepository.save(user.get());
+        userRepository.save(user);
         var methodName = method == 0 ? "joined" : "left";
         return ResponseEntity.ok(new MessageResponse("Successfully " + methodName));
     }

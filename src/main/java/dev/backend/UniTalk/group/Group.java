@@ -1,5 +1,6 @@
 package dev.backend.UniTalk.group;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.UniTalk.thread.Thread;
 import dev.backend.UniTalk.category.Category;
 import lombok.*;
@@ -31,11 +32,11 @@ public class Group {
     @Basic(optional = false)
     private Timestamp creationTimestamp;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Thread> threads = new HashSet<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
