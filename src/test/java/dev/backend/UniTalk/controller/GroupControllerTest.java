@@ -28,17 +28,6 @@ class GroupControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
-
-    @Test
-    @WithMockUser(username="user")
-    void groupAll() throws Exception {
-
-        mockMvc.perform(get("/api/group/all"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
     @Test
     void groupAllError() throws Exception {
         mockMvc.perform(get("/api/group/all"))
