@@ -1,16 +1,20 @@
 package dev.backend.UniTalk.group;
 
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
+<<<<<<< Updated upstream
 import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import org.springframework.hateoas.EntityModel;
+=======
+import dev.backend.UniTalk.payload.response.MessageResponse;
+import dev.backend.UniTalk.user.User;
+import dev.backend.UniTalk.user.UserRepository;
+>>>>>>> Stashed changes
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -22,6 +26,7 @@ public class GroupControllerService {
         this.repository = repository;
     }
 
+<<<<<<< Updated upstream
     public List<EntityModel<Group>> all() {
 
         return repository.findAll().stream()
@@ -29,6 +34,10 @@ public class GroupControllerService {
                         linkTo(methodOn(GroupController.class).one(group.getGroupId())).withSelfRel(),
                         linkTo(methodOn(GroupController.class).all()).withRel("groups")))
                 .collect(Collectors.toList());
+=======
+    public List<Group> all(User user) {
+        return new ArrayList<>(user.getGroups());
+>>>>>>> Stashed changes
     }
 
     public List<Group> userGroups(UserDetailsImpl userDetails){
@@ -75,4 +84,38 @@ public class GroupControllerService {
         repository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+<<<<<<< Updated upstream
+=======
+
+    public ResponseEntity<MessageResponse> joinLeaveGroup(Long id, User user, int method) {
+        var targetGroup = groupRepository.findById(id);
+        if (targetGroup.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("ERROR: Invalid request!"));
+        }
+
+        var groups = user.getGroups();
+        if (
+                method == 0 && groups.contains(targetGroup.get()) ||
+                method != 0 && !groups.contains(targetGroup.get())
+        ) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("ERROR: Invalid request!"));
+        }
+
+        if (method == 0) {
+            groups.add(targetGroup.get());
+        }
+        else {
+            groups.remove(targetGroup.get());
+        }
+        user.setGroups(groups);
+
+        userRepository.save(user);
+        var methodName = method == 0 ? "joined" : "left";
+        return ResponseEntity.ok(new MessageResponse("Successfully " + methodName));
+    }
+>>>>>>> Stashed changes
 }

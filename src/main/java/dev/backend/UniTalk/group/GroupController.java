@@ -2,6 +2,7 @@ package dev.backend.UniTalk.group;
 
 import java.util.List;
 
+<<<<<<< Updated upstream
 import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+=======
+import dev.backend.UniTalk.payload.response.MessageResponse;
+import dev.backend.UniTalk.user.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+>>>>>>> Stashed changes
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import javax.validation.Valid;
@@ -38,10 +44,8 @@ public class GroupController {
     }
 
     @GetMapping("/all")
-    public CollectionModel<EntityModel<Group>> all() {
-
-        List<EntityModel<Group>> groups = groupControllerService.all();
-        return CollectionModel.of(groups, linkTo(methodOn(GroupController.class).all()).withSelfRel());
+    public List<Group> all(@AuthenticationPrincipal User user) {
+        return groupControllerService.all(user);
     }
     @GetMapping("/owngroups")
     public CollectionModel<Group> userGroups(@AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -53,10 +57,7 @@ public class GroupController {
     public EntityModel<Group> one(@PathVariable Long id) {
 
         Group group = groupControllerService.one(id);
-
-        return EntityModel.of(group,
-                linkTo(methodOn(GroupController.class).one(id)).withSelfRel(),
-                linkTo(methodOn(GroupController.class).all()).withRel("group"));
+        return EntityModel.of(group);
     }
 
     @PostMapping("/")
@@ -79,4 +80,17 @@ public class GroupController {
     public ResponseEntity<HttpStatus> deleteAll() {
         return groupControllerService.deleteAll();
     }
+<<<<<<< Updated upstream
+=======
+
+    @GetMapping("/join/{id}")
+    public ResponseEntity<MessageResponse> joinGroup(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return groupControllerService.joinLeaveGroup(id, user, 0);
+    }
+
+    @GetMapping("/leave/{id}")
+    public ResponseEntity<MessageResponse> leaveGroup(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return groupControllerService.joinLeaveGroup(id, user, 1);
+    }
+>>>>>>> Stashed changes
 }
