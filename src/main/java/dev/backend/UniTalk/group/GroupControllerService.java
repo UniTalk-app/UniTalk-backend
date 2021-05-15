@@ -2,21 +2,14 @@ package dev.backend.UniTalk.group;
 
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.payload.response.MessageResponse;
-import dev.backend.UniTalk.security.services.UserDetailsImpl;
 import dev.backend.UniTalk.user.User;
 import dev.backend.UniTalk.user.UserRepository;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @Service
