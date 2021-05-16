@@ -32,5 +32,15 @@ public class UserLoader implements CommandLineRunner {
         roles.add(role.get());
         user.setRoles(roles);
         this.userRepository.save(user);
+
+        User user2 = new User("username2", "firstName", "lastName", "email2@email", encoder.encode("qwerty"));
+        var roles2 = user2.getRoles();
+        var role2 = roleRepository.findByName(ERole.ROLE_USER);
+        if (role2.isEmpty()) {
+            return;
+        }
+        roles2.add(role2.get());
+        user2.setRoles(roles2);
+        this.userRepository.save(user2);
     }
 }
