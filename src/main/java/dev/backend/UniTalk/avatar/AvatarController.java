@@ -29,14 +29,14 @@ public class AvatarController {
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpStatus> addAvatar(@AuthenticationPrincipal User user,
-                                                @RequestBody MultipartFile imageFile) throws IOException {
+    public ResponseEntity<HttpStatus> addAvatar(@RequestParam("image") final MultipartFile imageFile,
+                                                @AuthenticationPrincipal User user) throws IOException {
         return avatarControllerService.addAvatar(user, imageFile);
     }
 
     @PutMapping("")
-    public ResponseEntity<HttpStatus> updateAvatar(@AuthenticationPrincipal User user,
-                                                   @RequestBody MultipartFile imageFile) throws IOException {
+    public ResponseEntity<HttpStatus> updateAvatar(@RequestParam("image") final MultipartFile imageFile,
+                                                   @AuthenticationPrincipal User user) throws IOException {
         return avatarControllerService.updateAvatar(user, imageFile);
     }
 

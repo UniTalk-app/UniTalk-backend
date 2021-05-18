@@ -41,13 +41,16 @@ public class AvatarControllerService {
 
     public ResponseEntity<HttpStatus> addAvatar(User user, MultipartFile imageFile) throws IOException {
 
+        if(user.getAvatar() != null)
+            throw new IOException("User already has an avatar");
+
         Avatar avatar = new Avatar(imageFile.getBytes());
 
         user.setAvatar(avatar);
         avatar.setUser(user);
 
-        avatarRepository.save(avatar);
-        //userRepository.save(user);
+//        avatarRepository.save(avatar);
+//        userRepository.save(user);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

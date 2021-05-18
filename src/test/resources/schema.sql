@@ -8,8 +8,14 @@ TRUNCATE TABLE threads CASCADE ;
 INSERT INTO users (id, email, first_name, last_name, password, username)
 VALUES (10, 'email@email', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'testuser');
 
+INSERT INTO users (id, email, first_name, last_name, password, username)
+VALUES (11, 'email@email2', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'testuser2');
+
+INSERT INTO user_role (user_id, role_id) VALUES (10, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (11, 1);
+
 -- AVATAR
-INSERT INTO avatars (image, user_id) values(bytea('aaaabbbbccccddd'), 10);
+INSERT INTO avatars (image, user_id) VALUES (bytea('aaaabbbbccccddd'), 10);
 
 -- GROUP
 
