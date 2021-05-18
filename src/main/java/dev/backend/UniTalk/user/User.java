@@ -1,5 +1,6 @@
 package dev.backend.UniTalk.user;
 
+import dev.backend.UniTalk.avatar.Avatar;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.role.Role;
 import lombok.Getter;
@@ -51,6 +52,12 @@ public class User {
     @Email(message = "use correct email")
     @Size(min = 1, max = 64, message = "email: must be between 1 and 64 chars")
     private String email;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private Avatar avatar;
 
     public User(String username,
                 String firstName,
