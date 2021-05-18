@@ -8,6 +8,9 @@ TRUNCATE TABLE threads CASCADE ;
 INSERT INTO users (id, email, first_name, last_name, password, username)
 VALUES (10, 'email@email', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'testuser');
 
+-- AVATAR
+INSERT INTO avatars (image, user_id) values(bytea('aaaabbbbccccddd'), 10);
+
 -- GROUP
 
 INSERT INTO groups(group_id, group_name, creator_id, creation_timestamp)
