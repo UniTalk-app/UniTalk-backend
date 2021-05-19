@@ -3,8 +3,6 @@ package dev.backend.UniTalk.security;
 import dev.backend.UniTalk.security.jwt.AuthEntryPointJwt;
 import dev.backend.UniTalk.security.jwt.AuthTokenFilter;
 import dev.backend.UniTalk.security.services.UserDetailsServiceImpl;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

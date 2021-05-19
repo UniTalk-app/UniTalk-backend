@@ -4,13 +4,14 @@
 
 package dev.backend.UniTalk.group;
 
-import dev.backend.UniTalk.thread.Thread;
-import dev.backend.UniTalk.thread.ThreadRepository;
 import dev.backend.UniTalk.category.Category;
 import dev.backend.UniTalk.category.CategoryRepository;
+import dev.backend.UniTalk.thread.Thread;
+import dev.backend.UniTalk.thread.ThreadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import java.sql.Timestamp;
 
 @Component

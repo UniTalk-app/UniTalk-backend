@@ -1,16 +1,17 @@
 package dev.backend.UniTalk.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.thread.Thread;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity

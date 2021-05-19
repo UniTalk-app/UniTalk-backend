@@ -1,16 +1,18 @@
 package dev.backend.UniTalk.thread;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.category.Category;
 import dev.backend.UniTalk.chat.message.Message;
-import lombok.*;
+import dev.backend.UniTalk.group.Group;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "threads")

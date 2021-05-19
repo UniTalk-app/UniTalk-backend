@@ -1,8 +1,5 @@
 package dev.backend.UniTalk.role;
 
-import dev.backend.UniTalk.role.ERole;
-import dev.backend.UniTalk.role.Role;
-import dev.backend.UniTalk.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

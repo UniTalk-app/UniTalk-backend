@@ -5,14 +5,11 @@ import dev.backend.UniTalk.category.CategoryRepository;
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.group.GroupRepository;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 

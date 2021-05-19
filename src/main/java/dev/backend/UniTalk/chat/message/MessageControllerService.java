@@ -5,16 +5,14 @@ import dev.backend.UniTalk.thread.Thread;
 import dev.backend.UniTalk.thread.ThreadRepository;
 import dev.backend.UniTalk.user.User;
 import dev.backend.UniTalk.user.UserRepository;
-
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Date;
-import java.util.stream.Collectors;
-import java.util.Optional;
+
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageControllerService

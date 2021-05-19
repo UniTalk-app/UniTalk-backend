@@ -1,9 +1,12 @@
 package dev.backend.UniTalk.group;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.backend.UniTalk.thread.Thread;
 import dev.backend.UniTalk.category.Category;
-import lombok.*;
+import dev.backend.UniTalk.thread.Thread;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;

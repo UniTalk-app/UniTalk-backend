@@ -1,7 +1,9 @@
 package dev.backend.UniTalk.chat.message;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Timestamp;
-import lombok.*;
 
 //Ligther version of class Message, will be used for transfer through web
 @Getter @Setter
