@@ -11,8 +11,19 @@ VALUES (10, 'email@email', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhO
 INSERT INTO users (id, email, first_name, last_name, password, username)
 VALUES (11, 'email@email2', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'testuser2');
 
+INSERT INTO users (id, email, first_name, last_name, password, username)
+VALUES (12, 'email@email3', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'moderator');
+
+INSERT INTO users (id, email, first_name, last_name, password, username)
+VALUES (13, 'email@email4', 'first', 'last', '$2a$10$xPnL.Pddsox2oZGnGzKESOpg1EhOvBd6Fc0XfnyMW4bHY24zsFmi2', 'admin');
+
 INSERT INTO user_role (user_id, role_id) VALUES (10, 1);
 INSERT INTO user_role (user_id, role_id) VALUES (11, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (12, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (12, 2);
+INSERT INTO user_role (user_id, role_id) VALUES (13, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (13, 3);
+
 
 -- AVATAR
 INSERT INTO avatars (image, user_id) VALUES (bytea('aaaabbbbccccddd'), 10);
@@ -38,4 +49,8 @@ VALUES(11,'CategoryTitleTest', 11,'2013-04-23T18:25:43.511Z');
 INSERT INTO threads(thread_id, category_id, creation_timestamp, creator_id,
                     last_reply_author_id, last_reply_timestamp, title, group_id)
 VALUES(10, 10, '2012-04-23T18:25:43.511Z', 10, 10, '2012-04-23T18:25:43.511Z', 'ThreadTitleTest', 10);
+
+INSERT INTO threads(thread_id, category_id, creation_timestamp, creator_id,
+                    last_reply_author_id, last_reply_timestamp, title, group_id)
+VALUES(11, 11, '2012-04-23T18:25:43.511Z', 11, 11, '2012-04-23T18:25:43.511Z', 'ThreadTitleTest', 10);
 
