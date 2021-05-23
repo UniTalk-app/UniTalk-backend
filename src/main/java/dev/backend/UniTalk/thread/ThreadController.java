@@ -1,9 +1,12 @@
 package dev.backend.UniTalk.thread;
 
+import dev.backend.UniTalk.payload.response.MessageResponse;
+import dev.backend.UniTalk.user.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,8 +61,8 @@ public class ThreadController {
     }
 
     @DeleteMapping("/{idGroup}/thread/{idThread}")
-    public ResponseEntity<HttpStatus> deleteOne(@PathVariable Long idGroup, @PathVariable Long idThread) {
-        return threadControllerService.deleteOne(idGroup, idThread);
+    public ResponseEntity<MessageResponse> deleteOne(@PathVariable Long idGroup, @PathVariable Long idThread, @AuthenticationPrincipal User user) throws Exception {
+        return threadControllerService.deleteOne(idGroup, idThread, user);
     }
 
     @DeleteMapping("/{idGroup}/thread/")

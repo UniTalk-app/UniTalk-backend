@@ -39,7 +39,7 @@ class AuthControllerTest {
     @Test
     void authRegister() throws Exception {
         mockMvc.perform( post("/api/auth/register")
-                .content(asJsonString(new User("TestUserNew", "firstName", "lastName", "email@email3", encoder.encode("qwerty"))))
+                .content(asJsonString(new User("TestUserNew", "firstName", "lastName", "email@emai3", encoder.encode("qwerty"))))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

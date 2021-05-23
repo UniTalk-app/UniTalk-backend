@@ -3,13 +3,18 @@ package dev.backend.UniTalk.thread;
 import dev.backend.UniTalk.category.Category;
 import dev.backend.UniTalk.category.CategoryRepository;
 import dev.backend.UniTalk.exception.ResourceNotFoundException;
+import dev.backend.UniTalk.exception.UserAuthenticationException;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.group.GroupRepository;
+import dev.backend.UniTalk.payload.response.MessageResponse;
+import dev.backend.UniTalk.role.ERole;
+import dev.backend.UniTalk.user.User;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,15 +115,22 @@ public class ThreadControllerService {
         return threadRepository.save(thread);
     }
 
-    public ResponseEntity<HttpStatus> deleteOne(Long idGroup, Long idThread) {
+    public ResponseEntity<MessageResponse> deleteOne(Long idGroup, Long idThread, User user) throws Exception {
         Group group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found group with id = " + idGroup));
 
         Thread thread = threadRepository.findById(idThread)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
 
+        if (
+            !thread.getCreatorId().equals(user.getId()) &&
+            user.getRoles().stream().noneMatch(role -> role.getName() == ERole.ROLE_ADMIN || role.getName() == ERole.ROLE_MODERATOR)
+        ) {
+            throw new UserAuthenticationException("No rights to delete this resource");
+        }
+
         threadRepository.deleteById(idThread);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok().body(new MessageResponse("Thread successfully deleted"));
     }
 
     public ResponseEntity<HttpStatus> deleteAll(Long idGroup) {

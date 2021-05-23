@@ -3,14 +3,22 @@ package dev.backend.UniTalk.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.backend.UniTalk.group.Group;
 import dev.backend.UniTalk.thread.Thread;
+import io.jsonwebtoken.lang.Assert;
+import org.aspectj.lang.annotation.Before;
+import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Timestamp;
@@ -27,6 +35,20 @@ class ThreadControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private String token;
+
+    public void initAuth(String username, String password) throws Exception {
+        MvcResult result = mockMvc.perform( post("/api/auth/login")
+                .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        token = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(token);
+        token = jsonObject.getString("token");
+    }
 
     @Test
     @WithMockUser(username="user")
@@ -75,12 +97,48 @@ class ThreadControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("ThreadTitleReplace"));
     }
 
+    @Test
+    void threadDeleteOneAsCreator() throws Exception {
+        initAuth("testuser", "qwerty");
+        var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 10, 10)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Thread successfully deleted"));
+    }
 
     @Test
-    @WithMockUser(username="user")
-    void threadDeleteOne() throws Exception {
-        mockMvc.perform( delete("/api/group/{id}/thread/{id}", 10, 10) )
-                .andExpect(status().is(204));
+    void threadDeleteOneAsModerator() throws Exception {
+        initAuth("moderator", "qwerty");
+        var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Thread successfully deleted"));
+    }
+
+    @Test
+    void threadDeleteOneAsAdmin() throws Exception {
+        initAuth("admin", "qwerty");
+        var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Assert.isTrue(result.getResponse().getContentAsString().contains("Thread successfully deleted"));
+    }
+
+    @Test
+    void threadDeleteOneAsUnauthorized() throws Exception {
+        initAuth("testuser", "qwerty");
+        var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().is(405))
+                .andReturn();
+
+        Assert.isTrue(result.getResponse().getContentAsString().contains("No rights to delete this resource"));
     }
 
     @Test
