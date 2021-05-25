@@ -62,11 +62,11 @@ public class ThreadController {
 
     @DeleteMapping("/{idGroup}/thread/{idThread}")
     public ResponseEntity<MessageResponse> deleteOne(@PathVariable Long idGroup, @PathVariable Long idThread, @AuthenticationPrincipal User user) throws Exception {
-        return threadControllerService.deleteOne(idGroup, idThread, user);
+        return threadControllerService.deleteOne(idThread, user);
     }
 
     @DeleteMapping("/{idGroup}/thread/")
     public ResponseEntity<HttpStatus> deleteAll(@PathVariable Long idGroup) {
-        return threadControllerService.deleteAll(idGroup);
+        return threadControllerService.deleteAll();
     }
 }

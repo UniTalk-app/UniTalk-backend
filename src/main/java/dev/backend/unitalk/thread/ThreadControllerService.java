@@ -1,10 +1,8 @@
 package dev.backend.unitalk.thread;
 
-import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.category.CategoryRepository;
 import dev.backend.unitalk.exception.ResourceNotFoundException;
 import dev.backend.unitalk.exception.UserAuthenticationException;
-import dev.backend.unitalk.group.Group;
 import dev.backend.unitalk.group.GroupRepository;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.role.ERole;
@@ -117,9 +115,9 @@ public class ThreadControllerService {
         return threadRepository.save(thread);
     }
 
-    public ResponseEntity<MessageResponse> deleteOne(Long idGroup, Long idThread, User user) throws Exception {
-        Thread thread = threadRepository.findById(idThread)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
+    public ResponseEntity<MessageResponse> deleteOne(Long idThread, User user) throws Exception {
+        var thread = threadRepository.findById(idThread)
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_THREAD + idThread));
 
         if (
                 !thread.getCreatorId().equals(user.getId()) &&
@@ -132,7 +130,7 @@ public class ThreadControllerService {
         return ResponseEntity.ok().body(new MessageResponse("Thread successfully deleted"));
     }
 
-    public ResponseEntity<HttpStatus> deleteAll(Long idGroup) {
+    public ResponseEntity<HttpStatus> deleteAll() {
         threadRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -1,7 +1,6 @@
 package dev.backend.unitalk.category;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
-import dev.backend.unitalk.group.Group;
 import dev.backend.unitalk.group.GroupRepository;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -80,15 +79,12 @@ public class CategoryControllerService{
     }
 
     public ResponseEntity<HttpStatus> deleteOne(Long idGroup, Long idCategory) {
-        var group = groupRepository.findById(idGroup)
-                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
-
         categoryRepository.deleteById(idCategory);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<HttpStatus> deleteAll(Long idGroup) {
+    public ResponseEntity<HttpStatus> deleteAll() {
 
         categoryRepository.deleteAll();
 
