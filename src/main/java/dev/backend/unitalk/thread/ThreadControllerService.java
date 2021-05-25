@@ -117,9 +117,19 @@ public class ThreadControllerService {
         return threadRepository.save(thread);
     }
 
-    public ResponseEntity<HttpStatus> deleteOne(Long idThread) {
+    public ResponseEntity<MessageResponse> deleteOne(Long idGroup, Long idThread, User user) throws Exception {
+        Thread thread = threadRepository.findById(idThread)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found thread with id = " + idThread));
+
+        if (
+                !thread.getCreatorId().equals(user.getId()) &&
+                        user.getRoles().stream().noneMatch(role -> role.getName() == ERole.ROLE_ADMIN || role.getName() == ERole.ROLE_MODERATOR)
+        ) {
+            throw new UserAuthenticationException("No rights to delete this resource");
+        }
+
         threadRepository.deleteById(idThread);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok().body(new MessageResponse("Thread successfully deleted"));
     }
 
     public ResponseEntity<HttpStatus> deleteAll(Long idGroup) {
