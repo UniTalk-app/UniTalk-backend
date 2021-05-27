@@ -2,12 +2,15 @@ package dev.backend.unitalk.category;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
 import dev.backend.unitalk.group.GroupRepository;
+import dev.backend.unitalk.payload.request.CategoryRequest;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,11 +54,11 @@ public class CategoryControllerService{
         return category;
     }
 
-    public ResponseEntity<Category> newCategory(Category newCategory, Long idGroup) {
+    public ResponseEntity<Category> newCategory(CategoryRequest newCategory, Long idGroup) {
         var group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
-        var category = new Category(newCategory.getName(), group, newCategory.getCreationTimestamp());
+        var category = new Category(newCategory.getName(), group, new Timestamp(new Date().getTime()));
         categoryRepository.save(category);
 
         return ResponseEntity
@@ -63,13 +66,12 @@ public class CategoryControllerService{
                 .body(category);
     }
 
-    EntityModel<Category> replaceCategory(Category newCategory, Long idGroup, Long idCategory) {
+    EntityModel<Category> replaceCategory(CategoryRequest newCategory, Long idGroup, Long idCategory) {
 
         var category = categoryRepository.findById(idCategory)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + idCategory));
 
         category.setName(newCategory.getName());
-        category.setCreationTimestamp(newCategory.getCreationTimestamp());
 
         categoryRepository.save(category);
 
