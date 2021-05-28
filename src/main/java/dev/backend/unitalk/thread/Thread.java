@@ -58,12 +58,14 @@ public class Thread {
     public Thread(String title,
                   Long creatorId,
                   Group group,
+                  Category category,
                   Long lastReplyAuthorId,
                   Timestamp creationTimestamp,
                   Timestamp lastReplyTimestamp) {
         this.title = title;
         this.creatorId = creatorId;
         this.group = group;
+        this.category = category;
         this.lastReplyAuthorId = lastReplyAuthorId;
         this.creationTimestamp = creationTimestamp;
         this.lastReplyTimestamp = lastReplyTimestamp;

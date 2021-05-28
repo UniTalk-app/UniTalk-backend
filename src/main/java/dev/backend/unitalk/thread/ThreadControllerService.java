@@ -73,7 +73,7 @@ public class ThreadControllerService {
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCategoryId()));
 
         return groupRepository.findById(idGroup).map(group -> threadRepository.save(new Thread(
-                newThread.getTitle(), user.getId(), group, -1L, new Timestamp(new Date().getTime()), null
+                newThread.getTitle(), user.getId(), group, category, -1L, new Timestamp(new Date().getTime()), null
         ))).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
     }
 
