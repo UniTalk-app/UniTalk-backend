@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.chat.message.Message;
 import dev.backend.unitalk.group.Group;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
