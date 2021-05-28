@@ -1,8 +1,8 @@
 package dev.backend.unitalk.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.group.Group;
+import dev.backend.unitalk.payload.request.CategoryRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -53,7 +53,7 @@ class CategoryControllerTest {
         Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
 
         mockMvc.perform( post("/api/group/{id}/category/", 10)
-                .content(asJsonString(new Category("CategoryTitleNew", g, new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new CategoryRequest("CategoryTitleNew")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -67,7 +67,7 @@ class CategoryControllerTest {
         Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
 
         mockMvc.perform( put("/api/group/{id}/category/{id}", 10, 10)
-                .content(asJsonString(new Category("CategoryTitleReplace", g, new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new CategoryRequest("CategoryTitleReplace")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())

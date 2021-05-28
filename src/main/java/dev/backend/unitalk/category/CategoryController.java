@@ -1,5 +1,6 @@
 package dev.backend.unitalk.category;
 
+import dev.backend.unitalk.payload.request.CategoryRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -39,12 +40,12 @@ public class CategoryController
     }
 
     @PostMapping("/{idGroup}/category")
-    public ResponseEntity<Category> newCategory(@Valid @RequestBody Category newCategory, @PathVariable Long idGroup) {
+    public ResponseEntity<Category> newCategory(@Valid @RequestBody CategoryRequest newCategory, @PathVariable Long idGroup) {
         return categoryControllerService.newCategory(newCategory, idGroup);
     }
 
     @PutMapping("/{idGroup}/category/{idCategory}")
-    public ResponseEntity<EntityModel<Category>> replaceCategory(@Valid @RequestBody Category newCategory,
+    public ResponseEntity<EntityModel<Category>> replaceCategory(@Valid @RequestBody CategoryRequest newCategory,
                                       @PathVariable Long idGroup,
                                       @PathVariable Long idCategory) {
 

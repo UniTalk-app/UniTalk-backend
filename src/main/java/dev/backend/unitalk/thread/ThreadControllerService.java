@@ -4,6 +4,7 @@ import dev.backend.unitalk.category.CategoryRepository;
 import dev.backend.unitalk.exception.ResourceNotFoundException;
 import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.group.GroupRepository;
+import dev.backend.unitalk.payload.request.ThreadRequest;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.role.ERole;
 import dev.backend.unitalk.user.User;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,56 +65,33 @@ public class ThreadControllerService {
         return thread;
     }
 
-    public Thread newThread(Thread newThread, Long idGroup) {
+    public Thread newThread(ThreadRequest newThread, Long idGroup, User user) {
 
-        var thread = new Thread(newThread.getTitle(), newThread.getCreatorId(),
-                null, null, newThread.getLastReplyAuthorId(),
-                newThread.getCreationTimestamp(), newThread.getLastReplyTimestamp());
+        var category = newThread.getCategoryId() == -1
+                ? null
+                : categoryRepository.findById(newThread.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCategoryId()));
 
-        if(newThread.getCatId()!=null)
-        {
-            var category = categoryRepository.findById(newThread.getCatId())
-                    .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCatId()));
-
-            thread.setCategory(category);
-            thread.setCatId(newThread.getCatId());
-
-        } else
-            throw new ResourceNotFoundException("Category field cannot be null");
-
-        return groupRepository.findById(idGroup).map(group -> {
-            thread.setGroup(group);
-            return threadRepository.save(thread);
-        }).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
+        return groupRepository.findById(idGroup).map(group -> threadRepository.save(new Thread(
+                newThread.getTitle(), user.getId(), group, category, -1L, new Timestamp(new Date().getTime()), null
+        ))).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
     }
 
-    public Thread replaceThread(Thread newThread, Long idGroup, Long idThread) {
+    public Thread replaceThread(ThreadRequest newThread, Long idGroup, Long idThread) {
 
         var group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
-
         var thread = threadRepository.findById(idThread)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_THREAD + idThread));
 
+        var category = newThread.getCategoryId() == -1
+                ? null
+                : categoryRepository.findById(newThread.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCategoryId()));
+
+        thread.setCategory(category);
         thread.setTitle(newThread.getTitle());
-        thread.setCreatorId(newThread.getCreatorId());
-        thread.setGroup(group);
-        thread.setLastReplyAuthorId(newThread.getLastReplyAuthorId());
-        thread.setLastReplyTimestamp(newThread.getLastReplyTimestamp());
-        thread.setCreationTimestamp(newThread.getCreationTimestamp());
-
-        if(newThread.getCatId()!=null)
-        {
-            var category = categoryRepository.findById(newThread.getCatId())
-                    .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCatId()));
-
-            thread.setCategory(category);
-            thread.setCatId(newThread.getCatId());
-
-        } else
-            throw new ResourceNotFoundException("Category field cannot be null");
-
         return threadRepository.save(thread);
     }
 

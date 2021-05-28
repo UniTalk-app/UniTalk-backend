@@ -1,6 +1,7 @@
 package dev.backend.unitalk.user;
 
 import dev.backend.unitalk.exception.UserAuthenticationException;
+import dev.backend.unitalk.payload.request.UserRequest;
 import dev.backend.unitalk.payload.response.JwtResponse;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.role.ERole;
@@ -11,7 +12,6 @@ import dev.backend.unitalk.security.services.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +43,7 @@ public class AuthControllerService {
         this.jwtUtils=jwtUtils;
     }
 
-    public ResponseEntity<JwtResponse> authenticateUser(User loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(UserRequest loginRequest) {
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -64,7 +64,7 @@ public class AuthControllerService {
                 roles));
     }
 
-    public ResponseEntity<MessageResponse> registerUser(User registerRequest) throws UserAuthenticationException {
+    public ResponseEntity<MessageResponse> registerUser(UserRequest registerRequest) throws UserAuthenticationException {
 
         if (Boolean.TRUE.equals(userRepository.existsByUsername(registerRequest.getUsername())))
             throw  new UserAuthenticationException("Error: Username is already in use!");

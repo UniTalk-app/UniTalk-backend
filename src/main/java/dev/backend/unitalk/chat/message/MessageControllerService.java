@@ -1,7 +1,6 @@
 package dev.backend.unitalk.chat.message;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
-import dev.backend.unitalk.thread.Thread;
 import dev.backend.unitalk.thread.ThreadRepository;
 import dev.backend.unitalk.user.User;
 import dev.backend.unitalk.user.UserRepository;

@@ -1,18 +1,18 @@
 package dev.backend.unitalk.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.backend.unitalk.group.Group;
+import dev.backend.unitalk.Utils;
+import dev.backend.unitalk.payload.request.GroupRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.sql.Timestamp;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -47,10 +47,12 @@ class GroupControllerTest {
     }
 
     @Test
-    @WithMockUser(username="user")
+    @WithMockUser(username="testuser")
     void groupNew() throws Exception {
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
         mockMvc.perform( post("/api/group/")
-                .content(asJsonString(new Group("GroupTitleTestNew", 10L, new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new GroupRequest("GroupTitleTestNew")))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -61,7 +63,7 @@ class GroupControllerTest {
     @WithMockUser(username="user")
     void groupReplace() throws Exception {
         mockMvc.perform( put("/api/group/{id}", 10)
-                .content(asJsonString(new Group("GroupTitleTestReplace", 10L, new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new GroupRequest("GroupTitleTestReplace")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

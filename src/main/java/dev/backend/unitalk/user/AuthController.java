@@ -1,6 +1,7 @@
 package dev.backend.unitalk.user;
 
 import dev.backend.unitalk.exception.UserAuthenticationException;
+import dev.backend.unitalk.payload.request.UserRequest;
 import dev.backend.unitalk.payload.response.JwtResponse;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody User loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserRequest loginRequest) {
 
         return authControllerService.authenticateUser(loginRequest);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody User registerRequest) throws UserAuthenticationException {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody UserRequest registerRequest) throws UserAuthenticationException {
 
         return authControllerService.registerUser(registerRequest);
     }

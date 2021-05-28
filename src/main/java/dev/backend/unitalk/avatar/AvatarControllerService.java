@@ -1,7 +1,6 @@
 package dev.backend.unitalk.avatar;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
-import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.user.User;
 import dev.backend.unitalk.user.UserRepository;
 import org.springframework.http.HttpStatus;
