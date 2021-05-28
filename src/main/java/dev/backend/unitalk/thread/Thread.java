@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.chat.message.Message;
 import dev.backend.unitalk.group.Group;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -40,12 +38,13 @@ public class Thread {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
+    public Long getCategoryId() {
+        return category == null ? -1 : category.getCategoryId();
+    }
+
     @JsonIgnore
     @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Message> messageList;
-
-    @Column(nullable = true)
-    private Long catId;
 
     private Long lastReplyAuthorId;
 
@@ -56,14 +55,12 @@ public class Thread {
 
     public Thread(String title,
                   Long creatorId,
-                  Long catId,
                   Group group,
                   Long lastReplyAuthorId,
                   Timestamp creationTimestamp,
                   Timestamp lastReplyTimestamp) {
         this.title = title;
         this.creatorId = creatorId;
-        this.catId = catId;
         this.group = group;
         this.lastReplyAuthorId = lastReplyAuthorId;
         this.creationTimestamp = creationTimestamp;

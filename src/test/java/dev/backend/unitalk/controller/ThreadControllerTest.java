@@ -1,10 +1,10 @@
 package dev.backend.unitalk.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.backend.unitalk.Utils;
 import dev.backend.unitalk.group.Group;
-import dev.backend.unitalk.thread.Thread;
+import dev.backend.unitalk.payload.request.ThreadRequest;
 import io.jsonwebtoken.lang.Assert;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Timestamp;
@@ -31,20 +30,6 @@ class ThreadControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    private String token;
-
-    public void initAuth(String username, String password) throws Exception {
-        MvcResult result = mockMvc.perform( post("/api/auth/login")
-                .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        token = result.getResponse().getContentAsString();
-        JSONObject jsonObject = new JSONObject(token);
-        token = jsonObject.getString("token");
-    }
 
     @Test
     @WithMockUser(username="user")
@@ -66,12 +51,10 @@ class ThreadControllerTest {
     @Test
     @WithMockUser(username="user")
     void threadNew() throws Exception {
-
-        Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
-
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
         mockMvc.perform( post("/api/group/{id}/thread/", 10)
-                .content(asJsonString(new Thread("ThreadTitleNew", 10L, 10L, g,
-                        10L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new ThreadRequest("ThreadTitleNew", -1L)))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -85,8 +68,7 @@ class ThreadControllerTest {
         Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
 
         mockMvc.perform( put("/api/group/{id}/thread/{id}", 10, 10)
-                .content(asJsonString(new Thread("ThreadTitleReplace", 10L, 10L, g,
-                        10L, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()))))
+                .content(asJsonString(new ThreadRequest("ThreadTitleReplace", 11L)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -95,7 +77,7 @@ class ThreadControllerTest {
 
     @Test
     void threadDeleteOneAsCreator() throws Exception {
-        initAuth("testuser", "qwerty");
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
         var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 10, 10)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
@@ -106,7 +88,7 @@ class ThreadControllerTest {
 
     @Test
     void threadDeleteOneAsModerator() throws Exception {
-        initAuth("moderator", "qwerty");
+        var token = Utils.InitAuth("moderator", "qwerty", mockMvc);
         var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
@@ -117,7 +99,7 @@ class ThreadControllerTest {
 
     @Test
     void threadDeleteOneAsAdmin() throws Exception {
-        initAuth("admin", "qwerty");
+        var token = Utils.InitAuth("admin", "qwerty", mockMvc);
         var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
@@ -128,7 +110,7 @@ class ThreadControllerTest {
 
     @Test
     void threadDeleteOneAsUnauthorized() throws Exception {
-        initAuth("testuser", "qwerty");
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
         var result = mockMvc.perform(delete("/api/group/{id}/thread/{id}", 11, 11)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().is(405))

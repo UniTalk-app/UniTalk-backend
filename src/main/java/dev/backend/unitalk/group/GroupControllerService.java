@@ -1,14 +1,18 @@
 package dev.backend.unitalk.group;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
+import dev.backend.unitalk.payload.request.GroupRequest;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.user.User;
 import dev.backend.unitalk.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,21 +37,18 @@ public class GroupControllerService {
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + id));
     }
 
-    public Group newGroup(Group newGroup) {
+    public Group newGroup(GroupRequest newGroup, @AuthenticationPrincipal User user) {
 
-        var group = new Group(newGroup.getGroupName(), newGroup.getCreatorId(),
-                newGroup.getCreationTimestamp());
+        var group = new Group(newGroup.getName(), user.getId(), new Timestamp(new Date().getTime()));
 
         return groupRepository.save(group);
     }
 
-    public Group replaceGroup(Group newGroup, Long id) {
+    public Group replaceGroup(GroupRequest newGroup, Long id) {
 
         return groupRepository.findById(id)
                 .map(group -> {
-                    group.setGroupName(newGroup.getGroupName());
-                    group.setCreatorId(newGroup.getCreatorId());
-                    group.setCreationTimestamp(newGroup.getCreationTimestamp());
+                    group.setGroupName(newGroup.getName());
                     return groupRepository.save(group);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + id));

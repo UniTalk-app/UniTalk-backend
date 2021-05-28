@@ -1,5 +1,6 @@
 package dev.backend.unitalk.group;
 
+import dev.backend.unitalk.payload.request.GroupRequest;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.user.User;
 import org.springframework.hateoas.EntityModel;
@@ -36,13 +37,13 @@ public class GroupController {
     }
 
     @PostMapping("/")
-    public Group newGroup(@Valid @RequestBody Group newGroup) {
-        return groupControllerService.newGroup(newGroup);
+    public Group newGroup(@Valid @RequestBody GroupRequest newGroup, @AuthenticationPrincipal User user) {
+        return groupControllerService.newGroup(newGroup, user);
     }
 
 
     @PutMapping("/{id}")
-    public Group replaceGroup(@Valid @RequestBody Group newGroup, @PathVariable Long id) {
+    public Group replaceGroup(@Valid @RequestBody GroupRequest newGroup, @PathVariable Long id) {
         return groupControllerService.replaceGroup(newGroup, id);
     }
 
