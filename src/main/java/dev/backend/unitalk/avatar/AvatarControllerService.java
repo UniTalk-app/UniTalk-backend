@@ -1,7 +1,9 @@
 package dev.backend.unitalk.avatar;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
+import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.user.User;
+import dev.backend.unitalk.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,14 +14,29 @@ import java.io.IOException;
 @Service
 public class AvatarControllerService {
     private static final String NOT_HAVE_AVATAR = "User does not have an avatar";
+    private static final String NOT_FOUND_USER = "Not found user with username = ";
     private final AvatarRepository avatarRepository;
+    private final UserRepository userRepository;
 
-    public AvatarControllerService(AvatarRepository avatarRepository) {
+    public AvatarControllerService(AvatarRepository avatarRepository,
+                                   UserRepository userRepository) {
         this.avatarRepository=avatarRepository;
+        this.userRepository=userRepository;
     }
 
 
     public byte[] getAvatar(User user) {
+
+        if(user.getAvatar() == null)
+            throw new ResourceNotFoundException(NOT_HAVE_AVATAR);
+
+        return user.getAvatar().getImage();
+    }
+
+    public byte[] getAvatarByUsername(String username) {
+
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_USER + username));
 
         if(user.getAvatar() == null)
             throw new ResourceNotFoundException(NOT_HAVE_AVATAR);
