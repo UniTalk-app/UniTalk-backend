@@ -28,6 +28,12 @@ public class AvatarController {
         return avatarControllerService.getAvatar(user);
     }
 
+    @ResponseBody
+    @GetMapping(value = "/{username}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getAvatarByUsername(@PathVariable String username) {
+        return avatarControllerService.getAvatarByUsername(username);
+    }
+
     @PostMapping("")
     public ResponseEntity<HttpStatus> addAvatar(@RequestParam("image") final MultipartFile imageFile,
                                                 @AuthenticationPrincipal User user) throws IOException {
