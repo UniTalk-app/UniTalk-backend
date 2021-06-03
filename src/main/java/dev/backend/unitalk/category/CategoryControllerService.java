@@ -1,8 +1,10 @@
 package dev.backend.unitalk.category;
 
 import dev.backend.unitalk.exception.ResourceNotFoundException;
+import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.group.GroupRepository;
 import dev.backend.unitalk.payload.request.CategoryRequest;
+import dev.backend.unitalk.user.User;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +56,13 @@ public class CategoryControllerService{
         return category;
     }
 
-    public ResponseEntity<Category> newCategory(CategoryRequest newCategory, Long idGroup) {
+    public ResponseEntity<Category> newCategory(CategoryRequest newCategory, Long idGroup, User user) throws UserAuthenticationException {
         var group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
+
+        if (!user.getGroups().contains(group)) {
+            throw new UserAuthenticationException("User not in group");
+        }
 
         var category = new Category(newCategory.getName(), group, new Timestamp(new Date().getTime()));
         categoryRepository.save(category);

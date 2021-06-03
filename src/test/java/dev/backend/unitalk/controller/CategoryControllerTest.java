@@ -1,12 +1,14 @@
 package dev.backend.unitalk.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.backend.unitalk.Utils;
 import dev.backend.unitalk.group.Group;
 import dev.backend.unitalk.payload.request.CategoryRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
@@ -51,9 +53,11 @@ class CategoryControllerTest {
     void categoryNew() throws Exception {
 
         Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
 
         mockMvc.perform( post("/api/group/{id}/category/", 10)
                 .content(asJsonString(new CategoryRequest("CategoryTitleNew")))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
