@@ -65,16 +65,22 @@ public class ThreadControllerService {
         return thread;
     }
 
-    public Thread newThread(ThreadRequest newThread, Long idGroup, User user) {
+    public Thread newThread(ThreadRequest newThread, Long idGroup, User user) throws Exception {
 
         var category = newThread.getCategoryId() == -1
                 ? null
                 : categoryRepository.findById(newThread.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_CATEGORY + newThread.getCategoryId()));
 
-        return groupRepository.findById(idGroup).map(group -> threadRepository.save(new Thread(
+        var group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
+        if (!user.getGroups().contains(group)) {
+            throw new UserAuthenticationException("User not in group");
+        }
+
+        return threadRepository.save(new Thread(
                 newThread.getTitle(), user.getId(), group, category, -1L, new Timestamp(new Date().getTime()), null
-        ))).orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
+        ));
     }
 
     public Thread replaceThread(ThreadRequest newThread, Long idGroup, Long idThread) {

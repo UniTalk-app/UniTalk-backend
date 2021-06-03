@@ -1,11 +1,14 @@
 package dev.backend.unitalk.category;
 
+import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.payload.request.CategoryRequest;
+import dev.backend.unitalk.user.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,8 +43,8 @@ public class CategoryController
     }
 
     @PostMapping("/{idGroup}/category")
-    public ResponseEntity<Category> newCategory(@Valid @RequestBody CategoryRequest newCategory, @PathVariable Long idGroup) {
-        return categoryControllerService.newCategory(newCategory, idGroup);
+    public ResponseEntity<Category> newCategory(@Valid @RequestBody CategoryRequest newCategory, @PathVariable Long idGroup, @AuthenticationPrincipal User user) throws UserAuthenticationException {
+        return categoryControllerService.newCategory(newCategory, idGroup, user);
     }
 
     @PutMapping("/{idGroup}/category/{idCategory}")

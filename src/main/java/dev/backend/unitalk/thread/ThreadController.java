@@ -1,5 +1,6 @@
 package dev.backend.unitalk.thread;
 
+import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.payload.request.ThreadRequest;
 import dev.backend.unitalk.payload.response.MessageResponse;
 import dev.backend.unitalk.user.User;
@@ -47,7 +48,7 @@ public class ThreadController {
     }
 
     @PostMapping("/{idGroup}/thread")
-    public Thread newThread(@Valid @RequestBody ThreadRequest newThread, @PathVariable Long idGroup, @AuthenticationPrincipal User user) {
+    public Thread newThread(@Valid @RequestBody ThreadRequest newThread, @PathVariable Long idGroup, @AuthenticationPrincipal User user) throws Exception {
 
         return threadControllerService.newThread(newThread, idGroup, user);
     }
