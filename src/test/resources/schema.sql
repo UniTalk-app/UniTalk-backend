@@ -54,3 +54,7 @@ INSERT INTO threads(thread_id, category_id, creation_timestamp, creator_id,
                     last_reply_author_id, last_reply_timestamp, title, group_id)
 VALUES(11, 11, '2012-04-23T18:25:43.511Z', 11, 11, '2012-04-23T18:25:43.511Z', 'ThreadTitleTest', 10);
 
+-- USER_GROUP
+
+INSERT INTO user_group(user_id, group_id)
+VALUES (10, 10);
