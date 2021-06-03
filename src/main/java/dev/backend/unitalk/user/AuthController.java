@@ -4,6 +4,7 @@ import dev.backend.unitalk.exception.UserAuthenticationException;
 import dev.backend.unitalk.payload.request.UserRequest;
 import dev.backend.unitalk.payload.response.JwtResponse;
 import dev.backend.unitalk.payload.response.MessageResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,4 +33,8 @@ public class AuthController {
 
         return authControllerService.registerUser(registerRequest);
     }
+
+    //TODO: Check token validity
+/*    @PostMapping("/check")
+    public ResponseEntity<HttpStatus> checkToken()*/
 }

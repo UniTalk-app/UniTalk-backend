@@ -1,6 +1,9 @@
 package dev.backend.unitalk.user;
 
 
+import dev.backend.unitalk.exception.ResourceNotFoundException;
+import dev.backend.unitalk.exception.UserAuthenticationException;
+import dev.backend.unitalk.group.GroupRepository;
 import dev.backend.unitalk.role.Role;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,14 @@ import java.util.List;
 
 @Service
 public class UserControllerService {
+
+    private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
+
+    public UserControllerService(GroupRepository groupRepository, UserRepository userRepository) {
+        this.groupRepository = groupRepository;
+        this.userRepository = userRepository;
+    }
 
     public ResponseEntity<Object> getUserData(User user) {
 
@@ -31,6 +42,24 @@ public class UserControllerService {
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
+    public ResponseEntity<Object> getUsersInGroup(Long idGroup, User user) throws Exception {
+        var group = groupRepository.findById(idGroup)
+                .orElseThrow(() -> new ResourceNotFoundException("Group not found"));
+
+        if (!user.getGroups().contains(group)) {
+            throw new UserAuthenticationException("No access");
+        }
+
+        var users = new ArrayList<JSONObject>();
+        group.getUsers().forEach(u -> {
+            var entity = new JSONObject();
+            entity.put("id", u.getId());
+            entity.put("username", u.getUsername());
+            users.add(entity);
+        });
+
+        return ResponseEntity.ok().body(users);
+    }
 }
 
 

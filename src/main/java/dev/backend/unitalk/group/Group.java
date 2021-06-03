@@ -3,6 +3,7 @@ package dev.backend.unitalk.group;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.backend.unitalk.category.Category;
 import dev.backend.unitalk.thread.Thread;
+import dev.backend.unitalk.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,6 +48,17 @@ public class Group {
         this.creatorId = creatorId;
         this.creationTimestamp = creationTimestamp;
     }
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_group",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
+
+
 
     @Override
     public boolean equals(Object o) {
