@@ -41,7 +41,12 @@ public class GroupControllerService {
 
         var group = new Group(newGroup.getName(), user.getId(), new Timestamp(new Date().getTime()));
 
-        return groupRepository.save(group);
+        var resVal = groupRepository.save(group);
+        user.getGroups().add(group);
+        user.setGroups(user.getGroups());
+        userRepository.save(user);
+
+        return resVal;
     }
 
     public Group replaceGroup(GroupRequest newGroup, Long id) {
