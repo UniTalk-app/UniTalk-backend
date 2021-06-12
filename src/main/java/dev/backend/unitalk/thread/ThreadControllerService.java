@@ -83,13 +83,20 @@ public class ThreadControllerService {
         ));
     }
 
-    public Thread replaceThread(ThreadRequest newThread, Long idGroup, Long idThread) {
+    public Thread replaceThread(ThreadRequest newThread, Long idGroup, Long idThread, User user) throws UserAuthenticationException {
 
         var group = groupRepository.findById(idGroup)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_GROUP + idGroup));
 
         var thread = threadRepository.findById(idThread)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_THREAD + idThread));
+
+        if (
+                !thread.getCreatorId().equals(user.getId()) &&
+                        user.getRoles().stream().noneMatch(role -> role.getName() == ERole.ROLE_ADMIN || role.getName() == ERole.ROLE_MODERATOR)
+        ) {
+            throw new UserAuthenticationException("No rights to delete this resource");
+        }
 
         var category = newThread.getCategoryId() == -1
                 ? null
