@@ -57,9 +57,10 @@ public class ThreadController {
     @PutMapping("/{idGroup}/thread/{idThread}")
     public Thread replaceThread(@Valid @RequestBody ThreadRequest newThread,
                                 @PathVariable Long idGroup,
-                                @PathVariable Long idThread) {
+                                @PathVariable Long idThread,
+                                @AuthenticationPrincipal User user) throws UserAuthenticationException{
 
-        return threadControllerService.replaceThread(newThread, idGroup, idThread);
+        return threadControllerService.replaceThread(newThread, idGroup, idThread, user);
     }
 
     @DeleteMapping("/{idGroup}/thread/{idThread}")

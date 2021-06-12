@@ -66,9 +66,11 @@ class ThreadControllerTest {
     void threadReplace() throws Exception {
 
         Group g = new Group("GroupTitle", 10L, new Timestamp(System.currentTimeMillis()));
+        var token = Utils.InitAuth("testuser", "qwerty", mockMvc);
 
         mockMvc.perform( put("/api/group/{id}/thread/{id}", 10, 10)
                 .content(asJsonString(new ThreadRequest("ThreadTitleReplace", 11L)))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

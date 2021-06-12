@@ -23,24 +23,16 @@ public class UserLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        var user = new User("username", "firstName", "lastName", "email@email", encoder.encode("qwerty"));
+        var user = new User("admin", "admin", "admin", "email@email", encoder.encode("qwerty#"));
         var roles = user.getRoles();
-        var role = roleRepository.findByName(ERole.ROLE_USER);
-        if (role.isEmpty()) {
-            return;
-        }
-        roles.add(role.get());
+        var userRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow();
+        var modRole = roleRepository.findByName(ERole.ROLE_MODERATOR).orElseThrow();
+        var adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow();
+
+        roles.add(userRole);
+        roles.add(modRole);
+        roles.add(adminRole);
         user.setRoles(roles);
         this.userRepository.save(user);
-
-        var user2 = new User("username2", "firstName", "lastName", "email2@email", encoder.encode("qwerty"));
-        var roles2 = user2.getRoles();
-        var role2 = roleRepository.findByName(ERole.ROLE_USER);
-        if (role2.isEmpty()) {
-            return;
-        }
-        roles2.add(role2.get());
-        user2.setRoles(roles2);
-        this.userRepository.save(user2);
     }
 }
